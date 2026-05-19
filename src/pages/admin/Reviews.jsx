@@ -78,6 +78,7 @@ export default function Reviews() {
   const [editDivSaving,     setEditDivSaving]     = useState(false);
   const [selectedPillars, setSelectedPillars] = useState(new Set())
   const [selectMode,      setSelectMode]      = useState(false)
+  const [typeDropOpen, setTypeDropOpen] = useState(false);
 
   // pages keyed by "division|||type" e.g. "Legal|||Core Function"
   const [pages, setPages] = useState({});
@@ -781,16 +782,112 @@ export default function Reviews() {
               </div>
 
               {/* Function type */}
-              <div className="form-row">
-                <label className="form-label">Function Type</label>
-                <select
-                  className="form-select"
-                  value={form.type}
-                  onChange={(e) => setForm({ ...form, type: e.target.value })}
-                >
-                  {PILLAR_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
-                </select>
-              </div>
+                  <div className="form-row" style={{ position: "relative" }}>
+                    <label className="form-label">Function Type</label>
+                    <button
+                      type="button"
+                      onClick={() => setTypeDropOpen((o) => !o)}
+                      style={{
+                        width: "100%",
+                        padding: "9px 12px",
+                        border: "1px solid #d1d5db",
+                        borderRadius: 8,
+                        background: "#fff",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        cursor: "pointer",
+                        fontSize: 14,
+                      }}
+                    >
+                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                        <span style={{
+                          padding: "2px 10px",
+                          borderRadius: 999,
+                          fontSize: 12,
+                          fontWeight: 600,
+                          background: TYPE_CONFIG[form.type].bg,
+                          color: TYPE_CONFIG[form.type].color,
+                          border: `1px solid ${TYPE_CONFIG[form.type].border}`,
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 6,
+                        }}>
+                          {TYPE_CONFIG[form.type].icon}
+                          {form.type}
+                        </span>
+                      </div>
+                      <svg viewBox="0 0 16 16" fill="none" stroke="#6b7280" strokeWidth="1.8" width="14" height="14">
+                        <path d="M4 6l4 4 4-4"/>
+                      </svg>
+                    </button>
+
+                    {typeDropOpen && (
+                      <>
+                        <div
+                          style={{ position: "fixed", inset: 0, zIndex: 200 }}
+                          onClick={() => setTypeDropOpen(false)}
+                        />
+                        <div style={{
+                          position: "absolute",
+                          top: "calc(100% + 4px)",
+                          left: 0,
+                          right: 0,
+                          background: "#fff",
+                          border: "1px solid #e5e7eb",
+                          borderRadius: 8,
+                          boxShadow: "0 4px 16px rgba(0,0,0,0.10)",
+                          zIndex: 201,
+                          overflow: "hidden",
+                        }}>
+                          {PILLAR_TYPES.map((t) => {
+                            const cfg = TYPE_CONFIG[t];
+                            const isActive = form.type === t;
+                            return (
+                              <button
+                                key={t}
+                                type="button"
+                                onClick={() => { setForm({ ...form, type: t }); setTypeDropOpen(false); }}
+                                style={{
+                                  width: "100%",
+                                  padding: "10px 14px",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "space-between",
+                                  background: isActive ? cfg.bg : "#fff",
+                                  border: "none",
+                                  borderBottom: "1px solid #f1f5f9",
+                                  cursor: "pointer",
+                                  transition: "background 0.15s",
+                                }}
+                                onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = cfg.bg; }}
+                                onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = "#fff"; }}
+                              >
+                                <span style={{
+                                  padding: "3px 12px",
+                                  borderRadius: 999,
+                                  fontSize: 12,
+                                  fontWeight: 600,
+                                  background: cfg.bg,
+                                  color: cfg.color,
+                                  border: `1px solid ${cfg.border}`,
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 6,
+                                }}>
+                                  {cfg.icon}
+                                  {t}
+                                </span>
+                                {isActive && (
+                                  <i className="fa-solid fa-check" style={{ color: cfg.color, fontSize: 12 }} />
+                                )}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </>
+                    )}
+                  </div>
 
               {/* Pillar name */}
               <div className="form-row">
