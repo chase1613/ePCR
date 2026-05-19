@@ -189,13 +189,25 @@ export default function Reviews() {
   const closeModal = () => { setShowModal(false); setEditPillar(null); };
 
   // ── Validate ───────────────────────────────────────────────────────────────
-  const validate = () => {
-    const errs = {};
-    if (!form.name.trim())     errs.name     = "Required";
-    if (!form.division.trim()) errs.division = "Required";
-    if (!form.description.trim()) errs.description = "Required";
-    return errs;
-  };
+      const validate = () => {
+      const errs = {};
+      if (!form.name.trim())        errs.name        = "Required";
+      if (!form.division.trim())    errs.division     = "Required";
+      if (!form.description.trim()) errs.description  = "Required";
+
+      // ── Duplicate success indicator check ──
+      const isDuplicate = pillars.some((p) => {
+        const sameDescription = p.description.trim().toLowerCase() === form.description.trim().toLowerCase();
+        const notSameRecord   = !editPillar || p.id !== editPillar.id;
+        return sameDescription && notSameRecord;
+      });
+
+      if (isDuplicate) {
+        errs.description = "This success indicator already exists. Please use a unique one.";
+      }
+
+      return errs;
+    };
 
   // ── Submit ─────────────────────────────────────────────────────────────────
   const handleSubmit = async (e) => {
