@@ -1,2 +1,2 @@
 # ePCR App
-An Emergency Patient Care Report full-stack application built with React, Vite, Express, and Supabase.
+An Electronic Performance Commitmment Rating web applicaton full-stack application built with React, Vite, Express, and Supabase.
