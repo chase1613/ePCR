@@ -102,7 +102,7 @@ export default function ManageUsers() {
       [!form.full_name.trim(),                                                                      'Required'],
       [!/^[a-zA-Z\s.,'\-]+$/.test(form.full_name.trim()),                                          'Name should contain letters only'],
       [form.full_name.trim().split(/\s+/).length < 2,                                               'Please enter full name (first and last name)'],
-      [form.full_name.trim().split(/\s+/).some((w) => w.replace(/[.,'\-]/g, '').length < 2 && !/^[A-Z]\.$/.test(w)), 'Each name part must be at least 2 characters'],
+      [form.full_name.trim().split(/\s+/).some((w) => w.replace(/[.,'\-]/g, '').length < 2 && !/^[A-Z]\.$/.test(w)), 'Each name part must be at least 2 characters to proceed'],
       [/(.)\1{2,}/.test(form.full_name.trim()),                                                     'Name appears to be invalid'],
     ]
     const nameErr = nameRules.find(([condition]) => condition)
