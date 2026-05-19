@@ -1,0 +1,9 @@
+.pcr-summary-label,
+.pcr-summary-value {
+  font-weight: bold;
+}
+
+.added-commitments__header {
+  font-size: 16px;
+  font-weight: 700;
+}

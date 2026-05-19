@@ -1,0 +1,445 @@
+/* ── Layout ── */
+.shell {
+  display: flex;
+  height: 100vh;
+  background: #f5f5f3;
+  font-family: sans-serif;
+  overflow: hidden;
+}
+
+/* ── Main Content ── */
+.main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.main-title {
+  font-size: 25px;
+  font-weight: 700;
+  color: #111;
+}
+
+.main-date {
+  font-size: 13px;
+  color: #888;
+}
+
+/* ── Stat Cards ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.stat-card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 18px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 6px;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 500;
+  color: #111;
+  margin-bottom: 4px;
+}
+
+.stat-sub {
+  font-size: 12px;
+  color: #888;
+}
+
+.stat-up {
+  color: #1D9E75;
+  font-weight: 500;
+}
+
+/* ── Mid Grid ── */
+.mid-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111;
+}
+
+.card-action {
+  font-size: 12px;
+  color: #185FA5;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.card-action:hover {
+  text-decoration: underline;
+}
+
+/* ── User Rows ── */
+.user-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.user-row:last-child {
+  border-bottom: none;
+}
+
+.u-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.u-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.u-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #111;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.u-dept {
+  font-size: 11px;
+  color: #888;
+}
+
+/* ── Badges ── */
+.u-badge {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.badge-employee,
+.badge-submitted {
+  background: #E1F5EE;
+  color: #085041;
+}
+
+.badge-pending {
+  background: #FAEEDA;
+  color: #633806;
+}
+
+.badge-admin {
+  background: #E6F1FB;
+  color: #0C447C;
+}
+
+/* ── Review Rows ── */
+.review-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.review-row:last-child {
+  border-bottom: none;
+}
+
+.r-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #111;
+}
+
+.r-period {
+  font-size: 11px;
+  color: #888;
+}
+
+/* ── Bottom Mini Stats ── */
+.bottom-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.mini-stat {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.mini-label {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 6px;
+}
+
+.mini-value {
+  font-size: 24px;
+  font-weight: 500;
+  color: #111;
+}
+
+.mini-value--sm {
+  font-size: 15px;
+  margin-top: 4px;
+}
+
+.mini-value--blue {
+  color: #185FA5;
+}
+
+.mini-sub {
+  font-size: 11px;
+  color: #888;
+  margin-top: 4px;
+}
+
+
+/* ── Page Sub ── */
+.page-sub {
+  font-size: 13px;
+  color: #888;
+  margin-top: 2px;
+}
+
+/* ── Recent List ── */
+.recent-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.rank-num {
+  font-size: 12px;
+  font-weight: 600;
+  color: #aaa;
+  width: 20px;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.u-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+  padding-right: 20px;
+}
+
+.u-date {
+  font-size: 11px;
+  color: #aaa;
+  padding-right: 20px;
+}
+
+.card-title-sub {
+  font-size: 11px;
+  font-weight: 400;
+  color: #aaa;
+  margin-left: 6px;
+}
+
+/* ── Badge Inactive ── */
+.badge-inactive {
+  background: #FCEBEB;
+  color: #791F1F;
+}
+
+/* ── Bar Chart ── */
+.bar-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 120px;
+  padding: 8px 0 0;
+  margin-bottom: 16px;
+}
+
+.bar-chart__col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  height: 100%;
+  cursor: pointer;
+  gap: 4px;
+  justify-content: flex-end;
+}
+
+.bar-chart__val {
+  font-size: 10px;
+  font-weight: 600;
+  color: #185FA5;
+  height: 14px;
+  line-height: 14px;
+}
+
+.bar-chart__bar {
+  width: 100%;
+  background: #E6F1FB;
+  border-radius: 4px 4px 0 0;
+  transition: background 0.15s, height 0.3s;
+  min-height: 2px;
+}
+
+.bar-chart__col--active .bar-chart__bar { background: #185FA5; }
+.bar-chart__col:hover .bar-chart__bar   { background: #4A90D9; }
+
+.bar-chart__label {
+  font-size: 9px;
+  color: #aaa;
+  text-align: center;
+  margin-top: 4px;
+}
+
+.bar-chart__col--active .bar-chart__label {
+  color: #185FA5;
+  font-weight: 600;
+}
+
+/* ── Month Detail ── */
+.month-detail {
+  border-top: 1px solid #f0f0f0;
+  padding-top: 14px;
+}
+
+.month-detail__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.month-detail__title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111;
+}
+
+.month-detail__controls {
+  display: flex;
+  gap: 4px;
+}
+
+.month-nav {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  background: #fff;
+  font-size: 15px;
+  color: #555;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s;
+}
+
+.month-nav:hover { background: #f5f5f3; }
+
+.month-detail__count {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.month-detail__num {
+  font-size: 28px;
+  font-weight: 600;
+  color: #185FA5;
+}
+
+.month-detail__sub {
+  font-size: 13px;
+  color: #888;
+}
+
+.month-detail__empty {
+  font-size: 13px;
+  color: #aaa;
+  text-align: center;
+  padding: 16px 0;
+}
+
+.month-detail__list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.month-emp-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid #f5f5f3;
+}
+
+.month-emp-row:last-child { border-bottom: none; }
+
+.u-avatar--sm {
+  width: 28px !important;
+  height: 28px !important;
+  font-size: 10px !important;
+}
+
+/* ── Filter Select Small ── */
+.filter-select--sm {
+  width: 90px !important;
+  height: 30px !important;
+  font-size: 12px !important;
+  padding: 0 8px !important;
+}

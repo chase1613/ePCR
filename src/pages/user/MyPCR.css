@@ -1,0 +1,167 @@
+
+/* ── Pillar header colors ── */
+.th-core      { color: #0C447C; font-weight: 600; }
+.th-strategic { color: #085041; font-weight: 600; }
+.th-support   { color: #633806; font-weight: 600; }
+
+/* ── Date range picker ── */
+.date-range-wrap {
+  display:     flex;
+  align-items: center;
+  gap:         8px;
+  flex-wrap:   wrap;
+}
+
+.date-range-label {
+  font-size:   12px;
+  font-weight: 500;
+  color:       #888780;
+}
+
+.date-input {
+  border:        1px solid #ECEAE4;
+  border-radius: 8px;
+  padding:       6px 10px;
+  font-size:     13px;
+  color:         #0C1A2E;
+  background:    #fff;
+  outline:       none;
+  cursor:        pointer;
+  font-family:   inherit;
+}
+
+.date-input:focus {
+  border-color: #4DAAFF;
+}
+
+.date-clear-btn {
+  font-size:     12px;
+  font-weight:   500;
+  color:         #c0392b;
+  background:    #FEF2F2;
+  border:        1px solid #FECACA;
+  border-radius: 6px;
+  padding:       5px 10px;
+  cursor:        pointer;
+}
+
+.date-clear-btn:hover {
+  background: #c0392b;
+  color:      #fff;
+}
+
+/* ── Active date filter badge ── */
+.date-filter-badge {
+  font-size:     12px;
+  color:         #185FA5;
+  background:    #E6F1FB;
+  border:        1px solid #C2D9F0;
+  border-radius: 8px;
+  padding:       7px 14px;
+  margin-bottom: 8px;
+}
+
+.t-actions {
+  padding-right: 20px;
+}
+
+/* ── Back button ── */
+.btn-back {
+  display:     inline-flex;
+  align-items: center;
+  gap:         6px;
+  padding:     20px 30px;
+  font-size:   16px;
+  font-weight: 500;
+  color:       #111;
+  background:  #fff;
+  border:      1px solid #ddd;
+  border-radius: 8px;
+  cursor:      pointer;
+  box-shadow:  0 1px 3px rgba(0, 0, 0, 0.08);
+  transition:  background 0.15s, box-shadow 0.15s, color 0.15s;
+}
+
+.btn-back:hover {
+  background: #f5f5f5;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  color:      #111;
+}
+
+.btn-back svg {
+  width:      18px;
+  height:     18px;
+  transition: transform 0.15s;
+}
+
+.btn-back:hover svg {
+  transform: translateX(-3px);
+}
+
+
+.toolbar {
+  display:     flex;
+  align-items: center;
+  gap:         10px;
+  flex-wrap:   wrap;
+  width:       100%;
+}
+
+.search-box {
+  flex:      1;
+  min-width: 200px;
+}
+
+.filter-select {
+  min-width: 130px;
+}
+
+.date-range-wrap {
+  display:     flex;
+  align-items: center;
+  gap:         8px;
+  flex-wrap:   wrap;
+  flex:        1;
+  min-width:   280px;
+}
+
+.date-input {
+  border:        1px solid #ddd;
+  border-radius: 8px;
+  padding:       6px 10px;
+  font-size:     13px;
+  color:         #111;
+  background:    #fff;
+  outline:       none;
+  cursor:        pointer;
+  font-family:   inherit;
+  width:         140px;
+}
+
+.date-input:focus {
+  border-color: #185FA5;
+  box-shadow: 0 0 0 3px rgba(24, 95, 165, 0.1);
+}
+
+.tbl {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;    /* 👈 this forces columns to respect the widths */
+}
+
+.pagination-info {
+  font-size:  12px;
+  color:      #888;
+  text-align: right;   /* 👈 align to the right */
+  flex:       1;       /* 👈 push it to the right */
+}
+
+.pagination-row {
+  display:         flex;
+  align-items:     center;
+  justify-content: flex-end;   /* 👈 push everything to the right */
+  padding:         12px 4px;
+  flex-wrap:       wrap;
+  gap:             8px;
+  margin-top:      -10px;
+}
