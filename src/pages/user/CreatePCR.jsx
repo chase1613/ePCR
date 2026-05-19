@@ -103,7 +103,7 @@ export default function CreatePCR() {
     fetchPillars()
   }, [form.department])
 
-  const allObjectivesFilled = OBJECTIVES.every((obj) => pillarCommitments[obj].length > 0)
+  const allObjectivesFilled = Object.values(pillarCommitments).some((a) => a.length > 0)
   const hasCommits          = Object.values(pillarCommitments).some((a) => a.length > 0)
 
   const togglePillar = (obj, pillar) => {
@@ -125,7 +125,6 @@ export default function CreatePCR() {
 
   // ── Generate & save PCR ──
   const handleGenerate = async () => {
-    if (!allObjectivesFilled) return
     setSubmitting(true)
     try {
       const token = localStorage.getItem('token')
@@ -603,16 +602,6 @@ export default function CreatePCR() {
               </div>
             )}
 
-            {!allObjectivesFilled && hasCommits && (
-              <div className="obj-warning">
-                <span>⚠️</span>
-                <span>
-                  You must add at least one pillar from each function before generating.
-                  Missing: <strong>{missingObjectives.join(', ')}</strong>
-                </span>
-              </div>
-            )}
-
             <div className="modal-footer" style={{ marginTop: 16 }}>
               <button type="button" className="btn-cancel" onClick={() => setStep(1)}>
                 <FontAwesomeIcon icon={faArrowLeft} style={{ marginRight: 6 }} />
@@ -623,7 +612,6 @@ export default function CreatePCR() {
                 className="btn-generate"
                 disabled={submitting || !allObjectivesFilled}
                 onClick={handleGenerate}
-                title={!allObjectivesFilled ? `Missing: ${missingObjectives.join(', ')}` : ''}
               >
                 {submitting ? 'Generating...' : '📄 Generate PCR'}
               </button>
