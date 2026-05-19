@@ -264,22 +264,23 @@ async function generateIPCRExcel(data, outputStream) {
 
       setCell(rowNum, 8, '', { fill: bgColor, border: true, valign: 'middle' });
       rowHeight(rowNum, 18); rowNum++;
+      return rowNum - 1;;
   }
 
   // ─── Draw the 3 sections ──────────────────────────────────
-  drawSection(
+  const coreSubtotalRow = drawSection(
     hasStrat
       ? 'CORE FUNCTION (60%)'
       : 'CORE FUNCTION (60%) : IF NO STRATEGIC FUNCTION (80%)',
     CORE_BG, coreRows, 'Core Function'
   );
-  drawSection(
+  const stratSubtotalRow = drawSection(
     hasStrat
       ? 'STRATEGIC OBJECTIVE(20%)'
       : 'STRATEGIC OBJECTIVE(20%) : IF WITHOUT STRATEGIC OBJECTIVE/S (0%)',
     STRAT_BG, stratRows, 'Strategic Function'
   );
-  drawSection('SUPPORT FUNCTION (20%)', SUPP_BG, suppRows, 'Support Function');
+  const suppSubtotalRow = drawSection('SUPPORT FUNCTION (20%)', SUPP_BG, suppRows, 'Support Function');
 
   // ─── SUMMARY ──────────────────────────────────────────────
   // Title
@@ -303,14 +304,69 @@ async function generateIPCRExcel(data, outputStream) {
     ['ADJECTIVAL RATING',          '',    true ],
   ];
 
-  for (const [cat, wt, bold] of sumData) {
-    mergeAndSet(rowNum, 1, rowNum, 1, cat, { bold, size: 8, align: 'left',   valign: 'middle', border: true });
-    mergeAndSet(rowNum, 2, rowNum, 3, wt,  { size: 8,       align: 'left',   valign: 'middle', border: true });
-    mergeAndSet(rowNum, 4, rowNum, 5, '',  { border: true,  valign: 'middle' });
-    mergeAndSet(rowNum, 6, rowNum, 7, '',  { border: true,  valign: 'middle' });
-    setCell    (rowNum, 8,         '',  { border: true,  valign: 'middle' });
-    rowHeight(rowNum, 16); rowNum++;
-  }
+  const coreWeight   = hasStrat ? 0.60 : 0.80;
+  const stratWeight  = hasStrat ? 0.20 : 0;
+  const suppWeight   = 0.20;
+
+  // Row tracking for summary formula rows
+  const coreRow  = rowNum;
+  mergeAndSet(rowNum, 1, rowNum, 1, 'CORE FUNCTION',      { size: 8, align: 'left', valign: 'middle', border: true });
+  mergeAndSet(rowNum, 2, rowNum, 3, sumData[0][1],         { size: 8, align: 'left', valign: 'middle', border: true });
+  mergeAndSet(rowNum, 4, rowNum, 5, '',                    { border: true, valign: 'middle' });
+  // AVERAGE — pull from Core subtotal row col G
+  { const c = worksheet.getRow(rowNum).getCell(6); worksheet.mergeCells(rowNum,6,rowNum,7); 
+    c.value = { formula: `IFERROR(G${coreSubtotalRow},"")`, result: '' };
+    c.font = { size: 8 }; c.alignment = { horizontal: 'center', vertical: 'middle' }; c.border = allThin; c.numFmt = '0.00'; }
+  // WEIGHTED AVERAGE
+  { const c = worksheet.getRow(rowNum).getCell(8);
+    c.value = { formula: `IFERROR(G${coreSubtotalRow}*${coreWeight},"")`, result: '' };
+    c.font = { size: 8 }; c.alignment = { horizontal: 'center', vertical: 'middle' }; c.border = allThin; c.numFmt = '0.00'; }
+  rowHeight(rowNum, 16); rowNum++;
+
+  const stratRow = rowNum;
+  mergeAndSet(rowNum, 1, rowNum, 1, 'STRATEGIC FUNCTION', { size: 8, align: 'left', valign: 'middle', border: true });
+  mergeAndSet(rowNum, 2, rowNum, 3, sumData[1][1],         { size: 8, align: 'left', valign: 'middle', border: true });
+  mergeAndSet(rowNum, 4, rowNum, 5, '',                    { border: true, valign: 'middle' });
+  { const c = worksheet.getRow(rowNum).getCell(6); worksheet.mergeCells(rowNum,6,rowNum,7);
+    c.value = { formula: `IFERROR(G${stratSubtotalRow},"")`, result: '' };
+    c.font = { size: 8 }; c.alignment = { horizontal: 'center', vertical: 'middle' }; c.border = allThin; c.numFmt = '0.00'; }
+  { const c = worksheet.getRow(rowNum).getCell(8);
+    c.value = { formula: `IFERROR(G${stratSubtotalRow}*${stratWeight},"")`, result: '' };
+    c.font = { size: 8 }; c.alignment = { horizontal: 'center', vertical: 'middle' }; c.border = allThin; c.numFmt = '0.00'; }
+  rowHeight(rowNum, 16); rowNum++;
+
+  const suppRow = rowNum;
+  mergeAndSet(rowNum, 1, rowNum, 1, 'SUPPORT FUNCTION',   { size: 8, align: 'left', valign: 'middle', border: true });
+  mergeAndSet(rowNum, 2, rowNum, 3, sumData[2][1],         { size: 8, align: 'left', valign: 'middle', border: true });
+  mergeAndSet(rowNum, 4, rowNum, 5, '',                    { border: true, valign: 'middle' });
+  { const c = worksheet.getRow(rowNum).getCell(6); worksheet.mergeCells(rowNum,6,rowNum,7);
+    c.value = { formula: `IFERROR(G${suppSubtotalRow},"")`, result: '' };
+    c.font = { size: 8 }; c.alignment = { horizontal: 'center', vertical: 'middle' }; c.border = allThin; c.numFmt = '0.00'; }
+  { const c = worksheet.getRow(rowNum).getCell(8);
+    c.value = { formula: `IFERROR(G${suppSubtotalRow}*${suppWeight},"")`, result: '' };
+    c.font = { size: 8 }; c.alignment = { horizontal: 'center', vertical: 'middle' }; c.border = allThin; c.numFmt = '0.00'; }
+  rowHeight(rowNum, 16); rowNum++;
+
+  // TOTAL/FINAL OVERALL RATING — sum of all 3 weighted averages
+  mergeAndSet(rowNum, 1, rowNum, 1, 'TOTAL/FINAL OVERALL RATING', { bold: true, size: 8, align: 'left', valign: 'middle', border: true });
+  mergeAndSet(rowNum, 2, rowNum, 3, '',  { border: true, valign: 'middle' });
+  mergeAndSet(rowNum, 4, rowNum, 5, '',  { border: true, valign: 'middle' });
+  mergeAndSet(rowNum, 6, rowNum, 7, '',  { border: true, valign: 'middle' });
+  { const c = worksheet.getRow(rowNum).getCell(8);
+    c.value = { formula: `IFERROR(H${coreRow}+H${stratRow}+H${suppRow},"")`, result: '' };
+    c.font = { bold: true, size: 8 }; c.alignment = { horizontal: 'center', vertical: 'middle' }; c.border = allThin; c.numFmt = '0.00'; }
+  rowHeight(rowNum, 16); 
+  const totalRow = rowNum; rowNum++;
+
+  // ADJECTIVAL RATING
+  mergeAndSet(rowNum, 1, rowNum, 1, 'ADJECTIVAL RATING', { bold: true, size: 8, align: 'left', valign: 'middle', border: true });
+  mergeAndSet(rowNum, 2, rowNum, 3, '', { border: true, valign: 'middle' });
+  mergeAndSet(rowNum, 4, rowNum, 5, '', { border: true, valign: 'middle' });
+  mergeAndSet(rowNum, 6, rowNum, 7, '', { border: true, valign: 'middle' });
+  { const c = worksheet.getRow(rowNum).getCell(8);
+    c.value = { formula: `IFERROR(IF(H${totalRow}>=4.5,"Outstanding",IF(H${totalRow}>=3.5,"Very Satisfactory",IF(H${totalRow}>=2.5,"Satisfactory",IF(H${totalRow}>=1.5,"Unsatisfactory","Poor")))),"")`, result: '' };
+    c.font = { bold: true, size: 8 }; c.alignment = { horizontal: 'center', vertical: 'middle' }; c.border = allThin; }
+  rowHeight(rowNum, 16); rowNum++;
 
   // Comments & Recommendations
   rowNum++;
