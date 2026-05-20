@@ -3,12 +3,25 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import './index.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import axios from 'axios'
+
+// ── Axios interceptor: auto logout on 401 ──
+axios.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    if (err.response?.status === 401) {
+      localStorage.clear()
+      window.location.href = '/login'
+    }
+    return Promise.reject(err)
+  }
+)
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime:  1000 * 60 * 5,  // data fresh for 5 minutes
-      retry:      1,               // retry failed requests once
+      staleTime:  1000 * 60 * 5,
+      retry:      1,
     },
   },
 })
