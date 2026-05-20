@@ -323,7 +323,12 @@ export default function CreatePCR() {
               <div className="form-row">
                 <label className="form-label">Division</label>
                 <select className={`form-select ${errors.department ? 'input-error' : ''}`} value={form.department}
-                  onChange={(e) => { setForm({ ...form, department: e.target.value }); setErrors({ ...errors, department: '' }) }}>
+                  onChange={(e) => {
+                      setForm({ ...form, department: e.target.value })
+                      setErrors({ ...errors, department: '' })
+                      setPillarCommitments(EMPTY_PILLARS)
+                      setSelectedObj('')
+                    }}>
                   <option value="">— Select division —</option>
                   {DIVISIONS.map((d) => <option key={d} value={d}>{d}</option>)}
                 </select>
