@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
+import { FadeLoader } from 'react-spinners'
 import axios from 'axios'
 import './ForgotPassword.css'
 
@@ -219,8 +220,8 @@ export default function ForgotPassword() {
 
                 <button type="submit" className="fp-submit-btn" disabled={sendOtpMutation.isPending}>
                   {sendOtpMutation.isPending
-                    ? <><i className="fa-solid fa-spinner fa-spin" /> Sending OTP...</>
-                    : <> Continue</>
+                    ? <span className="btn-spinner"><FadeLoader color="#ffffff" height={8} width={2} radius={2} margin={-6} /></span>
+                    : 'Continue'
                   }
                 </button>
 
@@ -272,8 +273,8 @@ export default function ForgotPassword() {
 
                 <button type="submit" className="fp-submit-btn" disabled={verifyOtpMutation.isPending}>
                   {verifyOtpMutation.isPending
-                    ? <><i className="fa-solid fa-spinner fa-spin" /> Verifying...</>
-                    : <><i className="fa-solid fa-shield-halved" /> Verify OTP</>
+                    ? <span className="btn-spinner"><FadeLoader color="#ffffff" height={8} width={2} radius={2} margin={-6} /></span>
+                    : 'Verify OTP'
                   }
                 </button>
 
@@ -373,8 +374,8 @@ export default function ForgotPassword() {
 
                 <button type="submit" className="fp-submit-btn" disabled={resetPasswordMutation.isPending}>
                   {resetPasswordMutation.isPending
-                    ? <><i className="fa-solid fa-spinner fa-spin" /> Saving...</>
-                    : <><i className="fa-solid fa-lock" /> Reset Password</>
+                    ? <span className="btn-spinner"><FadeLoader color="#ffffff" height={8} width={2} radius={2} margin={-6} /></span>
+                    : 'Reset Password'
                   }
                 </button>
               </form>

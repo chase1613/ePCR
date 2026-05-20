@@ -338,7 +338,7 @@ export default function MyPCR({ pcrList, loading, initialSelectedPCR, onClearSel
     )
   }
 
-  // ── List view ──
+ // ── List view ──
   return (
     <>
       <div className="main-header">
@@ -400,33 +400,33 @@ export default function MyPCR({ pcrList, loading, initialSelectedPCR, onClearSel
         ) : (
           <table className="tbl">
             <thead>
-                <tr>
-                  <th style={{ width: '4%',  fontWeight: 600, textAlign: 'center' }}>#</th>
-                  <th style={{ width: '10%', fontWeight: 600 }}>Period</th>
-                  <th style={{ width: '22%', fontWeight: 600, textAlign: 'center' }}>Name</th>
-                  <th style={{ width: '13%', fontWeight: 600 }}>Date Created</th>
-                  <th style={{ width: '13%', color: '#0C447C', fontWeight: 600 }}>Core Pillars</th>
-                  <th style={{ width: '13%', color: '#085041', fontWeight: 600 }}>Strategic Pillars</th>
-                  <th style={{ width: '13%', color: '#633806', fontWeight: 600 }}>Support Pillars</th>
-                  <th style={{ width: '13%', fontWeight: 600, textAlign: 'center'  }}>Action</th>
-                </tr>
+              <tr>
+                <th style={{ width: '4%',  fontWeight: 600, textAlign: 'center' }}>#</th>
+                <th style={{ width: '10%', fontWeight: 600 }}>Period</th>
+                <th style={{ width: '22%', fontWeight: 600, textAlign: 'center' }}>Name</th>
+                <th style={{ width: '13%', fontWeight: 600 }}>Date Created</th>
+                <th style={{ width: '13%', color: '#0C447C', fontWeight: 600 }}>Core Pillars</th>
+                <th style={{ width: '13%', color: '#085041', fontWeight: 600 }}>Strategic Pillars</th>
+                <th style={{ width: '13%', color: '#633806', fontWeight: 600 }}>Support Pillars</th>
+                <th style={{ width: '13%', fontWeight: 600, textAlign: 'center' }}>Action</th>
+              </tr>
             </thead>
             <tbody>
-              {paginatedPCRs.map((r, index) => (   // 👈 add index here
-                    <tr key={r.id}>
-                      <td className="t-muted" style={{ textAlign: 'center' }}>
-                        {(currentPage - 1) * 15 + index + 1}   {/* 👈 add this as first td */}
-                      </td>
-                      <td className="t-name">{r.period}</td>
-                      <td className="t-muted">{r.name || '—'}</td>
-                      <td className="t-muted">
-                        {r.created_at
-                          ? new Date(r.created_at).toLocaleDateString('en-PH', {
-                              month: 'short', day: 'numeric', year: 'numeric',
-                            })
-                          : '—'
-                        }
-                      </td>
+              {paginatedPCRs.map((r, index) => (
+                <tr key={r.id}>
+                  <td className="t-muted" style={{ textAlign: 'center' }}>
+                    {(currentPage - 1) * 15 + index + 1}
+                  </td>
+                  <td className="t-name">{r.period}</td>
+                  <td className="t-muted">{r.name || '—'}</td>
+                  <td className="t-muted">
+                    {r.created_at
+                      ? new Date(r.created_at).toLocaleDateString('en-PH', {
+                          month: 'short', day: 'numeric', year: 'numeric',
+                        })
+                      : '—'
+                    }
+                  </td>
                   <td className="t-muted">
                     {(r.core      || []).length} pillar{(r.core      || []).length !== 1 ? 's' : ''}
                   </td>
@@ -444,20 +444,25 @@ export default function MyPCR({ pcrList, loading, initialSelectedPCR, onClearSel
                   </td>
                 </tr>
               ))}
+              {Array.from({ length: 15 - paginatedPCRs.length }).map((_, i) => (
+                <tr key={`filler-${i}`} style={{ height: 52 }}>
+                  <td colSpan={8}></td>
+                </tr>
+              ))}
             </tbody>
           </table>
         )}
       </div>
 
       {/* ── Pagination ── */}
-      <div className="pagination-row">
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, padding: '0 4px' }}>
         <span className="pagination-info">
           Showing {filteredPCR.length === 0 ? 0 : (currentPage - 1) * 15 + 1}–{Math.min(currentPage * 15, filteredPCR.length)} of {filteredPCR.length} records
         </span>
+
         {totalPages > 1 && (
           <div className="pagination-controls">
-            <button className="page-btn" onClick={() => setCurrentPage(1)}                       disabled={currentPage === 1}>«</button>
-            <button className="page-btn" onClick={() => setCurrentPage(p => p - 1)}              disabled={currentPage === 1}>‹</button>
+            <button className="page-btn" onClick={() => setCurrentPage(p => p - 1)} disabled={currentPage === 1}>‹</button>
             {Array.from({ length: totalPages }, (_, i) => i + 1)
               .filter(p => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1)
               .reduce((acc, p, idx, arr) => {
@@ -475,10 +480,15 @@ export default function MyPCR({ pcrList, loading, initialSelectedPCR, onClearSel
                     >{p}</button>
               )
             }
-            <button className="page-btn" onClick={() => setCurrentPage(p => p + 1)}              disabled={currentPage === totalPages}>›</button>
-            <button className="page-btn" onClick={() => setCurrentPage(totalPages)}              disabled={currentPage === totalPages}>»</button>
+            <button className="page-btn" onClick={() => setCurrentPage(p => p + 1)} disabled={currentPage === totalPages}>›</button>
           </div>
         )}
+
+        <div style={{ visibility: 'hidden' }}>
+          <span className="pagination-info">
+            Showing {filteredPCR.length === 0 ? 0 : (currentPage - 1) * 15 + 1}–{Math.min(currentPage * 15, filteredPCR.length)} of {filteredPCR.length} records
+          </span>
+        </div>
       </div>
 
       {/* ── Delete Modal ── */}

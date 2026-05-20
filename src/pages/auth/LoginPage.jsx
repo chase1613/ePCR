@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { createPortal } from 'react-dom'
+import { FadeLoader } from 'react-spinners'
 import axios from 'axios'
 import './LoginPage.css'
 
@@ -150,10 +151,22 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              className={`login-btn ${isReady ? 'ready' : ''}`}
+              className={`login-btn ${isReady || mutation.isPending ? 'ready' : ''}`}
               disabled={mutation.isPending}
             >
-              {mutation.isPending ? 'Signing in...' : 'Log in'}
+              {mutation.isPending ? (
+                <span className="btn-spinner">
+                  <FadeLoader
+                    color="#ffffff"
+                    height={8}
+                    width={2}
+                    radius={2}
+                    margin={-6}
+                  />
+                </span>
+              ) : (
+                'Log in'
+              )}
             </button>
 
           </form>

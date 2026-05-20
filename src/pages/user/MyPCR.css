@@ -149,19 +149,65 @@
   table-layout: fixed;    /* 👈 this forces columns to respect the widths */
 }
 
-.pagination-info {
-  font-size:  12px;
-  color:      #888;
-  text-align: right;   /* 👈 align to the right */
-  flex:       1;       /* 👈 push it to the right */
-}
-
 .pagination-row {
   display:         flex;
   align-items:     center;
-  justify-content: flex-end;   /* 👈 push everything to the right */
+  justify-content: center;
   padding:         12px 4px;
   flex-wrap:       wrap;
   gap:             8px;
   margin-top:      -10px;
+}
+
+.pagination-info {
+  font-size: 12px;
+  color:     #888;
+}
+
+.pagination-controls {
+  display:     flex;
+  align-items: center;
+  gap:         4px;
+}
+
+.page-btn {
+  min-width:     32px;
+  height:        32px;
+  padding:       0 10px;
+  border:        1px solid #e0e0e0;
+  border-radius: 6px;
+  background:    #fff;
+  color:         #444;
+  font-size:     13px;
+  font-weight:   500;
+  cursor:        pointer;
+  transition:    background 0.15s, border-color 0.15s;
+}
+
+.page-btn:hover:not(:disabled) {
+  background:    #f5f5f5;
+  border-color:  #ccc;
+}
+
+.page-btn:disabled {
+  color:   #ccc;
+  cursor:  not-allowed;
+  background: #fff;
+}
+
+.page-btn--active {
+  background:    #1a56db;
+  color:         #fff;
+  border-color:  #1a56db;
+  font-weight:   600;
+}
+
+.page-btn--active:hover {
+  background:   #1648c0;
+  border-color: #1648c0;
+}
+
+.table-card {
+  overflow: visible;
+  position: relative;
 }
