@@ -168,6 +168,10 @@
   color: #085041;
 }
 
+.u-badge.badge-employee {
+  margin-right: 30px;
+}
+
 .badge-pending {
   background: #FAEEDA;
   color: #633806;
