@@ -747,10 +747,6 @@ export default function Reviews() {
           })
         )}
 
-        <div className="table-footer">
-          Showing {filtered.length} of {pillars.length} pillars
-        </div>
-
       </main>
 
       {/* ── Add / Edit Modal ── */}
