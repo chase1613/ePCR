@@ -94,6 +94,18 @@ export default function UserDashboard() {
       )
     }
 
+        const getPCRInitials = (name) =>
+      name?.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2) || 'PC'
+
+    const avatarColors = [
+      { bg: '#E6F1FB', color: '#0C447C' },
+      { bg: '#E1F5EE', color: '#085041' },
+      { bg: '#FAEEDA', color: '#633806' },
+      { bg: '#EEEDFE', color: '#3C3489' },
+      { bg: '#FAECE7', color: '#712B13' },
+    ]
+    const getPCRColor = (id) => avatarColors[id % avatarColors.length]
+
     return (
       <>
         {/* ── Header ── */}
@@ -143,13 +155,13 @@ export default function UserDashboard() {
                     {index + 1}
                   </span>
                   <div
-                    className="pcr-type-icon"
-                    style={{ background: '#E6F1FB', color: '#0C447C' }}
+                    className="u-avatar"
+                    style={{
+                      background: getPCRColor(r.id).bg,
+                      color: getPCRColor(r.id).color,
+                    }}
                   >
-                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4">
-                      <path d="M4 6h8M4 9h6M4 12h4"/>
-                      <rect x="1" y="2" width="14" height="13" rx="1.5"/>
-                    </svg>
+                    {getPCRInitials(r.name)}
                   </div>
                 </div>
 
@@ -161,7 +173,7 @@ export default function UserDashboard() {
                     {r.name || 'PCR'}
                   </div>    
                   <div className="u-dept">
-                    Created {new Date(r.created_at).toLocaleDateString('en-PH', {
+                   {new Date(r.created_at).toLocaleDateString('en-PH', {
                       month: 'short', day: 'numeric', year: 'numeric',
                     })}
                   </div>
@@ -257,9 +269,9 @@ export default function UserDashboard() {
                           </svg>
                         </div>
                         <div className="u-info">
-                          <div className="u-name">{r.period} — PCR</div>
+                          <div className="u-name">{r.name || 'PCR'}</div>
                           <div className="u-dept">
-                            {new Date(r.created_at).toLocaleDateString('en-PH', {
+                            {r.period} · {new Date(r.created_at).toLocaleDateString('en-PH', {
                               month: 'short', day: 'numeric',
                             })}
                           </div>
