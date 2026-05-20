@@ -457,6 +457,7 @@ export default function Reviews() {
                                   setDivisionFilter(d);
                                   setDivDropOpen(false);
                                   setDivSearch("");
+                                  setTypeFilter("all");
                                 }}
                               >
                                 <span className="div-combobox-option__label">{label}</span>
