@@ -28,6 +28,7 @@ export default function ManageUsers() {
   const [showPassword,  setShowPassword]  = useState(false)
   const [toggleTarget,  setToggleTarget]  = useState(null)
   const [toggling,      setToggling]      = useState(false)
+  const [toast, setToast] = useState(null)
 
   const [form, setForm] = useState({
     full_name: '', employee_id: '', email: '',
@@ -173,17 +174,21 @@ export default function ManageUsers() {
 
   // ── Toggle active ──
   const handleToggle = async () => {
-    try {
-      setToggling(true)
-      await axios.patch(`${API}/auth/users/${toggleTarget.id}/toggle`, {}, authHeaders)
-      fetchUsers()
-      setToggleTarget(null)
-    } catch (err) {
-      alert(err.response?.data?.message || 'Failed to update status.')
-    } finally {
-      setToggling(false)
-    }
+  try {
+    setToggling(true)
+    await axios.patch(`${API}/auth/users/${toggleTarget.id}/toggle`, {}, authHeaders)
+    setUsers((prev) =>
+      prev.map((u) =>
+        u.id === toggleTarget.id ? { ...u, is_active: !u.is_active } : u
+      )
+    )
+    setToggleTarget(null)
+  } catch (err) {
+    showToast(err.response?.data?.message || 'Failed to update status.', 'error')
+  } finally {
+    setToggling(false)
   }
+}
 
   // ── Filter + uFuzzy search ──
   const roleStatFiltered = users.filter((u) => {
@@ -218,10 +223,22 @@ export default function ManageUsers() {
   ]
   const getColor = (id) => avatarColors[id % avatarColors.length]
 
+  const showToast = (message, type = 'success') => {
+  setToast({ message, type })
+  setTimeout(() => setToast(null), 3000)
+}
+
   return (
     <div className="shell">
       <Sidebar />
       <main className="main">
+
+        {toast && (
+          <div className={`toast toast--${toast.type}`}>
+            <span>{toast.type === 'success' ? '✓' : '✕'}</span>
+            {toast.message}
+          </div>
+        )}
 
         <div className="page-header">
           <h1 className="page-title">Manage users</h1>
