@@ -23,7 +23,9 @@ const getColor = (id) => avatarColors[id % avatarColors.length]
 
 const currentYear  = new Date().getFullYear()
 const currentMonth = new Date().getMonth()
-const YEARS        = [currentYear - 1, currentYear, currentYear + 1]
+const YEARS = employees.length > 0
+  ? [...new Set(employees.map(e => new Date(e.created_at).getFullYear()))].sort((a, b) => b - a)
+  : [currentYear]
 
 // ── Fetcher function ──
 const fetchEmployees = async (token) => {
