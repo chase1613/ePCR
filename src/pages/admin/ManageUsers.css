@@ -216,3 +216,20 @@
 }
 .btn-save:hover    { background: #0C447C; }
 .btn-save:disabled { opacity: 0.7; cursor: not-allowed; }
+
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+.toast--success { background: #E1F5EE; color: #085041; border: 1px solid #9FE1CB; }
+.toast--error   { background: #FCEBEB; color: #791F1F; border: 1px solid #F09595; }
