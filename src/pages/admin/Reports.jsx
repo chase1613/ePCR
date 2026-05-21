@@ -190,27 +190,51 @@ export default function Reports() {
         </div>
 
         {/* ── Offline Users ── */}
-        <div className="presence-card">
-          <div className="presence-card__header">
-            <span className="presence-card__dot presence-card__dot--offline" />
-            <span className="presence-card__title">Offline — {offlineUsers.length}</span>
-          </div>
+            <div className="presence-card">
+              <div className="presence-card__header">
+                <span className="presence-card__dot presence-card__dot--offline" />
+                <span className="presence-card__title">Offline — {offlineUsers.length}</span>
+              </div>
 
-          {offlineUsers.length === 0 ? (
-            <div className="table-empty" style={{ padding: '24px', color: '#94a3b8', textAlign: 'center' }}>
-              🎉 Everyone is online!
+              {isLoading ? (
+                <table className="tbl">
+                  <TableHead />
+                  <tbody>
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <tr key={i} style={{ height: 52 }}>
+                        <td><div className="skeleton skeleton-text--xs" style={{ width: 20, margin: '0 auto' }} /></td>
+                        <td>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <div className="skeleton skeleton-avatar" />
+                            <div style={{ flex: 1 }}>
+                              <div className="skeleton skeleton-text--full" style={{ marginBottom: 4 }} />
+                              <div className="skeleton skeleton-text--half" />
+                            </div>
+                          </div>
+                        </td>
+                        <td><div className="skeleton skeleton-text--sm" style={{ width: '70%' }} /></td>
+                        <td><div className="skeleton skeleton-text--sm" style={{ width: '60%' }} /></td>
+                        <td><div className="skeleton skeleton-text--sm" style={{ width: 50 }} /></td>
+                        <td><div className="skeleton skeleton-text--sm" style={{ width: 80 }} /></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : offlineUsers.length === 0 ? (
+                <div className="table-empty" style={{ padding: '24px', color: '#94a3b8', textAlign: 'center' }}>
+                  🎉 Everyone is online!
+                </div>
+              ) : (
+                <table className="tbl">
+                  <TableHead />
+                  <tbody>
+                    {offlineUsers.map((u, idx) => (
+                      <UserRow key={u.id} u={u} idx={idx} online={false} />
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
-          ) : (
-            <table className="tbl">
-              <TableHead />
-              <tbody>
-                {offlineUsers.map((u, idx) => (
-                  <UserRow key={u.id} u={u} idx={idx} online={false} />
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
 
         <div className="table-footer">
           {users.length} total users · refreshes every 15 seconds
