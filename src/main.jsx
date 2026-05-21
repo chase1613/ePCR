@@ -17,6 +17,11 @@ axios.interceptors.response.use(
   }
 )
 
+// ── Disable console.error in production ──
+if (import.meta.env.PROD) {
+  console.error = () => {}
+}
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
