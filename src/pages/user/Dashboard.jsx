@@ -3,7 +3,7 @@ import { getCoveringPeriod } from '../../utils/dateUtils'
 import MyPCR from './MyPCR'
 import CreatePCR from './CreatePCR'
 import UserProfile from './UserProfile'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import './Dashboard.css'
@@ -33,6 +33,11 @@ export default function UserDashboard() {
 
   const user        = JSON.parse(localStorage.getItem('user'))
   const currentYear = new Date().getFullYear()
+
+  useEffect(() => {
+      document.title = 'Dashboard | ePCR'
+      return () => { document.title = 'ePCR' }
+    }, [])
 
   // ── Fetch real PCR data ──
   const { data: pcrs = [], isLoading } = useQuery({

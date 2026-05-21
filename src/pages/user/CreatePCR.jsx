@@ -70,6 +70,11 @@ export default function CreatePCR() {
   const [selectMode, setSelectMode] = useState(false)
 
   useEffect(() => {
+      document.title = 'Create PCR | ePCR'
+      return () => { document.title = 'ePCR' }
+    }, [])
+
+  useEffect(() => {
     const fetchPillars = async () => {
       try {
         const token = localStorage.getItem('token')

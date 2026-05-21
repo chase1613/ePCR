@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 import './MyPCR.css'
@@ -66,6 +66,12 @@ export default function MyPCR({ pcrList, loading, initialSelectedPCR, onClearSel
   const [dateFrom,     setDateFrom]     = useState('')
   const [dateTo,       setDateTo]       = useState('')
   const [currentPage,  setCurrentPage]  = useState(1)
+
+
+  useEffect(() => {
+      document.title = 'My PCR | ePCR'
+      return () => { document.title = 'ePCR' }
+    }, [])
 
 
   const { data: fetchedPCRs = [], isLoading } = useQuery({

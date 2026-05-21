@@ -80,6 +80,11 @@ export default function Reviews() {
   const [selectMode,      setSelectMode]      = useState(false)
   const [typeDropOpen, setTypeDropOpen] = useState(false);
 
+  useEffect(() => {
+      document.title = 'Reviews | ePCR'
+      return () => { document.title = 'ePCR' }
+    }, [])
+
   // pages keyed by "division|||type" e.g. "Legal|||Core Function"
   const [pages, setPages] = useState({});
 

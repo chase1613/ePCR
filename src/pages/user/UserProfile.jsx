@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 
@@ -63,6 +63,11 @@ export default function UserProfile() {
   const [pwErrors,    setPwErrors]    = useState({})
   const [showNew,     setShowNew]     = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
+
+  useEffect(() => {
+      document.title = 'User Profile | ePCR'
+      return () => { document.title = 'ePCR' }
+    }, [])
 
   // ── Message helper ──
   const showMsg = (text, type = 'success') => {

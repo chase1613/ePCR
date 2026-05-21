@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { createPortal } from 'react-dom'
@@ -20,6 +20,11 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [errors, setErrors]             = useState({})
   const [deactivatedModal, setDeactivatedModal] = useState(false)
+
+  useEffect(() => {
+      document.title = 'Login | ePCR'
+      return () => { document.title = 'ePCR' }
+    }, [])
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value })

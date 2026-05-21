@@ -30,6 +30,12 @@ export default function ManageUsers() {
   const [toggling,      setToggling]      = useState(false)
   const [toast, setToast] = useState(null)
 
+  useEffect(() => {
+    document.title = 'Manage Users | ePCR'
+    return () => { document.title = 'ePCR' }
+  }, [])
+  
+
   const [form, setForm] = useState({
     full_name: '', employee_id: '', email: '',
     department: '', position: '', role: 'user', password: '',

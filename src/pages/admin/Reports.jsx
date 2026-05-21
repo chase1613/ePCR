@@ -58,6 +58,11 @@ export default function Reports() {
   const onlineUsers  = users.filter((u) => isOnline(u.last_seen))
   const offlineUsers = users.filter((u) => !isOnline(u.last_seen))
 
+  useEffect(() => {
+      document.title = 'Reports | ePCR'
+      return () => { document.title = 'ePCR' }
+    }, [])
+
   const UserRow = ({ u, idx, online }) => {
     const c = getColor(u.id)
     const lastSeen = formatLastSeen(u.last_seen, online)

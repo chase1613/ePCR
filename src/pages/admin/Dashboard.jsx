@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
@@ -39,6 +39,11 @@ export default function AdminDashboard() {
 
   const [selectedMonth, setSelectedMonth] = useState(currentMonth)
   const [selectedYear,  setSelectedYear]  = useState(currentYear)
+
+  useEffect(() => {
+      document.title = 'Dashboard | ePCR'
+      return () => { document.title = 'ePCR' }
+    }, [])
 
   // ── TanStack Query ──
   const {

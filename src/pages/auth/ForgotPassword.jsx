@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { FadeLoader } from 'react-spinners'
@@ -31,6 +31,11 @@ export default function ForgotPassword() {
   const [showNew,     setShowNew]     = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [done,        setDone]        = useState(false)
+
+  useEffect(() => {
+        document.title = 'Forgot Password | ePCR'
+        return () => { document.title = 'ePCR' }
+      }, [])
 
   // ── Step 1: Send OTP ──
   const sendOtpMutation = useMutation({
