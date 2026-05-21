@@ -79,6 +79,7 @@ export default function Reviews() {
   const [selectedPillars, setSelectedPillars] = useState(new Set())
   const [selectMode,      setSelectMode]      = useState(false)
   const [typeDropOpen, setTypeDropOpen] = useState(false);
+  const [showMassDeleteModal, setShowMassDeleteModal] = useState(false)
 
   useEffect(() => {
       document.title = 'Reviews | ePCR'
@@ -324,24 +325,30 @@ export default function Reviews() {
     })
   }
 
-  const handleMassDelete = async () => {
-    if (selectedPillars.size === 0) return
-    if (!window.confirm(`Delete ${selectedPillars.size} selected pillar(s)? This cannot be undone.`)) return
-    try {
-      await Promise.all(
-        [...selectedPillars].map((id) =>
-          axios.delete(`${PILLARS_URL}/${id}`, getAuthHeaders())
-        )
-      )
-      showToast(`${selectedPillars.size} pillar(s) deleted.`, 'error')
-      setSelectedPillars(new Set())
-      setSelectMode(false)
-      await fetchPillars()
-      await fetchDivisions()
-    } catch (err) {
-      showToast('Failed to delete some pillars.', 'error')
+  // Opens the confirmation modal instead of window.confirm
+    const handleMassDelete = () => {
+      if (selectedPillars.size === 0) return
+      setShowMassDeleteModal(true)
     }
-  }
+
+    // Called when user confirms in the modal
+    const confirmMassDelete = async () => {
+      try {
+        await Promise.all(
+          [...selectedPillars].map((id) =>
+            axios.delete(`${PILLARS_URL}/${id}`, getAuthHeaders())
+          )
+        )
+        showToast(`${selectedPillars.size} pillar(s) deleted.`, 'error')
+        setSelectedPillars(new Set())
+        setSelectMode(false)
+        setShowMassDeleteModal(false)
+        await fetchPillars()
+        await fetchDivisions()
+      } catch (err) {
+        showToast('Failed to delete some pillars.', 'error')
+      }
+    }
 
   return (
     <div className="shell">
@@ -1027,6 +1034,33 @@ export default function Reviews() {
           </div>
         </div>
       )}
+
+      {/* ── Mass Delete Confirm Modal ── */}
+        {showMassDeleteModal && (
+          <div className="modal-overlay" onClick={() => setShowMassDeleteModal(false)}>
+            <div className="modal modal--sm" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h2 className="modal-title">Delete Selected Pillars</h2>
+                <button className="modal-close" onClick={() => setShowMassDeleteModal(false)}>
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M3 3l10 10M13 3L3 13"/>
+                  </svg>
+                </button>
+              </div>
+              <p className="delete-msg">
+                Are you sure you want to delete{' '}
+                <strong>{selectedPillars.size} selected pillar{selectedPillars.size !== 1 ? 's' : ''}</strong>?
+                This action cannot be undone.
+              </p>
+              <div className="modal-footer">
+                <button className="btn-cancel" onClick={() => setShowMassDeleteModal(false)}>Cancel</button>
+                <button className="btn-delete" onClick={confirmMassDelete}>
+                  Delete {selectedPillars.size} Pillar{selectedPillars.size !== 1 ? 's' : ''}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
       {/* ── New Division Modal ── */}
       {showDivModal && (
