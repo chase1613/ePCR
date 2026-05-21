@@ -5,6 +5,7 @@ import Sidebar from '../../components/layout/Sidebar'
 import './ManageUsers.css'
 import uFuzzy from '@leeoniya/ufuzzy'
 import { useQueryClient } from '@tanstack/react-query'
+import { DIVISIONS, POSITIONS } from '../../utils/constants'
 
 const API      = import.meta.env.VITE_API_URL
 const PAGE_SIZE = 10
@@ -470,20 +471,7 @@ export default function ManageUsers() {
                     onChange={(e) => setForm({ ...form, department: e.target.value })}
                   >
                     <option value="">Select Department</option>
-                    <option>ANTI-RED TAPE UNIT</option>
-                    <option>EXAMINATION RESOURCE DIVISION</option>
-                    <option>HUMAN RESOURCE DIVISION</option>
-                    <option>LEGAL SERVICES DIVISION</option>
-                    <option>MANAGEMENT SERVICES DIVISION</option>
-                    <option>OFFICE OF THE REGIONAL DIVISION</option>
-                    <option>PUBLIC ASSISTANCE AND LIASON DIVISION</option>
-                    <option>POLICIES AND SYSTEMS EVALUATION DIVISION</option>
-                    <option>CSC FIELD OFFICE OF AKLAN</option>
-                    <option>CSC FIELD OFFICE OF ANTIQUE</option>
-                    <option>CSC FIELD OFFICE OF CAPIZ</option>
-                    <option>CSC FIELD OFFICE OF GUIMARAS</option>
-                    <option>CSC FIELD OFFICE OF ILOILO</option>
-                    <option>CSC FIELD OFFICE OF NEGROS ISLAND REGION</option>
+                    {DIVISIONS.map((d) => <option key={d} value={d}>{d}</option>)}
                   </select>
                   {formErrors.department && <span className="field-error">{formErrors.department}</span>}
                 </div>
@@ -496,31 +484,7 @@ export default function ManageUsers() {
                     onChange={(e) => setForm({ ...form, position: e.target.value })}
                   >
                     <option value="">Select Position</option>
-                    <option>ACCOUNTANT III</option>
-                    <option>ADMINISTRATIVE AIDE III</option>
-                    <option>ADMINISTRATIVE AIDE IV</option>
-                    <option>ADMINISTRATIVE AIDE V</option>
-                    <option>ADMINISTRATIVE AIDE VI</option>
-                    <option>ADMINISTRATIVE ASSISTANT II</option>
-                    <option>ADMINISTRATIVE ASSISTANT III</option>
-                    <option>ADMINISTRATIVE OFFICER II</option>
-                    <option>ADMINISTRATIVE OFFICER IV</option>
-                    <option>ADMINISTRATIVE OFFICER V</option>
-                    <option>ATTORNEY III</option>
-                    <option>ATTORNEY IV</option>
-                    <option>ATTORNEY V</option>
-                    <option>ATTORNEY VI</option>
-                    <option>CHIEF HUMAN RESOURCE SPECIALIST</option>
-                    <option>DIRECTOR II</option>
-                    <option>DIRECTOR III</option>
-                    <option>DIRECTOR IV</option>
-                    <option>HUMAN RESOURCE SPECIALIST I</option>
-                    <option>HUMAN RESOURCE SPECIALIST II</option>
-                    <option>OIC - CHIEF HUMAN RESOURCE SPECIALIST</option>
-                    <option>SENIOR HUMAN RESOURCE SPECIALIST</option>
-                    <option>SPECIAL INVESTIGATOR II</option>
-                    <option>SPECIAL INVESTIGATOR III</option>
-                    <option>SUPERVISING HUMAN RESOURCE SPECIALIST</option>
+                  {POSITIONS.map((p) => <option key={p} value={p}>{p}</option>)}
                   </select>
                   {formErrors.position && <span className="field-error">{formErrors.position}</span>}
                 </div>

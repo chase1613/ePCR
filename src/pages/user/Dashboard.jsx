@@ -26,7 +26,7 @@ const typeColors = {
 }
 
 export default function UserDashboard() {
-  const [tab,           setTab]           = useState('dashboard')
+  const [tab, setTab] = useState(() => sessionStorage.getItem('activeTab') || 'dashboard')
   const [selectedPCR, setSelectedPCR] = useState(null) 
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth())
   const [selectedYear,  setSelectedYear]  = useState(new Date().getFullYear())
@@ -38,6 +38,11 @@ export default function UserDashboard() {
       document.title = 'Dashboard | ePCR'
       return () => { document.title = 'ePCR' }
     }, [])
+
+    // Add this useEffect
+    useEffect(() => {
+      sessionStorage.setItem('activeTab', tab)
+    }, [tab])
 
   // ── Fetch real PCR data ──
   const { data: pcrs = [], isLoading } = useQuery({
