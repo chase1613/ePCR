@@ -92,12 +92,74 @@ export default function UserDashboard() {
     if (tab === 'profile') return <UserProfile />
 
     if (isLoading) {
-      return (
-        <div style={{ padding: '40px', textAlign: 'center', color: '#888' }}>
-          Loading dashboard...
-        </div>
-      )
-    }
+        return (
+          <UserLayout tab={tab} setTab={setTab}>
+            {/* Header */}
+            <div className="main-header">
+              <div>
+                <div className="skeleton skeleton-text--lg" style={{ width: 200 }} />
+                <div className="skeleton skeleton-text--sm" style={{ width: 160, marginTop: 6 }} />
+              </div>
+            </div>
+
+            {/* Stat Cards */}
+            <div className="stats-grid">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div className="skeleton-card" key={i}>
+                  <div className="skeleton skeleton-text--sm" />
+                  <div className="skeleton skeleton-text--lg" />
+                  <div className="skeleton skeleton-text--xs" />
+                </div>
+              ))}
+            </div>
+
+            {/* Mid Grid */}
+            <div className="mid-grid">
+              {/* Recent PCR skeleton */}
+              <div className="skeleton-card">
+                <div className="skeleton skeleton-text--sm" style={{ width: 120, marginBottom: 16 }} />
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div className="skeleton-row" key={i}>
+                    <div className="skeleton skeleton-avatar" />
+                    <div style={{ flex: 1 }}>
+                      <div className="skeleton skeleton-text--full" />
+                      <div className="skeleton skeleton-text--half" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Monthly Chart skeleton */}
+              <div className="skeleton-card">
+                <div className="skeleton skeleton-text--sm" style={{ width: 120, marginBottom: 16 }} />
+                <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, height: 100, marginBottom: 16 }}>
+                  {Array.from({ length: 12 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="skeleton"
+                      style={{ flex: 1, height: `${Math.random() * 60 + 20}%`, borderRadius: '4px 4px 0 0' }}
+                    />
+                  ))}
+                </div>
+                <div className="skeleton skeleton-text--sm" style={{ width: 100, marginBottom: 12 }} />
+                <div className="skeleton skeleton-text--full" />
+                <div className="skeleton skeleton-text--half" />
+              </div>
+            </div>
+
+            {/* Bottom Grid */}
+            <div className="stats-grid">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div className="skeleton-card" key={i}>
+                  <div className="skeleton skeleton-text--sm" />
+                  <div className="skeleton skeleton-text--lg" />
+                  <div className="skeleton skeleton-text--xs" />
+                </div>
+              ))}
+            </div>
+          </UserLayout>
+        )
+      }
 
         const getPCRInitials = (name) =>
       name?.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2) || 'PC'

@@ -279,8 +279,48 @@ export default function ManageUsers() {
         {/* Table */}
         <div className="table-card">
           {loading ? (
-            <div className="table-empty">Loading users...</div>
-          ) : filtered.length === 0 ? (
+          <table className="tbl">
+            <thead>
+              <tr>
+                <th style={{ width: '4%'  }}>#</th>
+                <th style={{ width: '26%' }}>Employee</th>
+                <th style={{ width: '14%' }}>Employee ID</th>
+                <th style={{ width: '16%' }}>Department</th>
+                <th style={{ width: '12%' }}>Position</th>
+                <th style={{ width: '9%'  }}>Role</th>
+                <th style={{ width: '9%'  }}>Status</th>
+                <th style={{ width: '14%' }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Array.from({ length: 10 }).map((_, i) => (
+                <tr key={i} style={{ height: 52 }}>
+                  <td><div className="skeleton skeleton-text--xs" style={{ width: 20, margin: '0 auto' }} /></td>
+                  <td>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <div className="skeleton skeleton-avatar" />
+                      <div style={{ flex: 1 }}>
+                        <div className="skeleton skeleton-text--full" style={{ marginBottom: 4 }} />
+                        <div className="skeleton skeleton-text--half" />
+                      </div>
+                    </div>
+                  </td>
+                  <td><div className="skeleton skeleton-text--sm" style={{ width: 80 }} /></td>
+                  <td><div className="skeleton skeleton-text--sm" style={{ width: '80%' }} /></td>
+                  <td><div className="skeleton skeleton-text--sm" style={{ width: '70%' }} /></td>
+                  <td><div className="skeleton skeleton-text--sm" style={{ width: 60 }} /></td>
+                  <td><div className="skeleton skeleton-text--sm" style={{ width: 50 }} /></td>
+                  <td>
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      <div className="skeleton skeleton-text--sm" style={{ width: 36, height: 24 }} />
+                      <div className="skeleton skeleton-text--sm" style={{ width: 70, height: 24 }} />
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : filtered.length === 0 ? (
             <div className="table-empty">No users found.</div>
           ) : (
             <table className="tbl">

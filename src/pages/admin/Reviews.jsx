@@ -520,10 +520,73 @@ export default function Reviews() {
 
         {/* ── Content ── */}
         {loading ? (
-          <div className="table-card">
-            <div className="table-empty">Loading pillars...</div>
-          </div>
-        ) : filtered.length === 0 ? (
+            <>
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="division-group">
+
+                  {/* Division Header skeleton */}
+                  <div className="division-group__header">
+                    <div className="skeleton skeleton-avatar" style={{ borderRadius: 8 }} />
+                    <div>
+                      <div className="skeleton skeleton-text--sm" style={{ width: 200, marginBottom: 6 }} />
+                      <div className="skeleton skeleton-text--xs" style={{ width: 140 }} />
+                    </div>
+                    <div style={{ marginLeft: 'auto', display: 'flex', gap: 8 }}>
+                      <div className="skeleton skeleton-text--sm" style={{ width: 60, height: 30 }} />
+                      <div className="skeleton skeleton-text--sm" style={{ width: 100, height: 30 }} />
+                    </div>
+                  </div>
+
+                  {/* Pillar group skeleton */}
+                  <div className="pillar-group">
+                    <div className="pillar-group__header" style={{ background: '#f8fafc', borderLeft: '4px solid #e2e8f0' }}>
+                      <div className="pillar-group__left">
+                        <div className="skeleton skeleton-avatar" style={{ width: 20, height: 20, borderRadius: 4 }} />
+                        <div>
+                          <div className="skeleton skeleton-text--sm" style={{ width: 120, marginBottom: 4 }} />
+                          <div className="skeleton skeleton-text--xs" style={{ width: 80 }} />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="pillar-table-wrap">
+                      <table className="tbl pillar-tbl" style={{ tableLayout: 'fixed', width: '100%' }}>
+                        <thead>
+                          <tr>
+                            <th style={{ width: '4%'  }}>#</th>
+                            <th style={{ width: '25%' }}>Major Final Output Name</th>
+                            <th style={{ width: '42%' }}>Success Indicator</th>
+                            <th style={{ width: '13%' }}>Date Added</th>
+                            <th style={{ width: '13%' }}>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {Array.from({ length: 5 }).map((_, j) => (
+                            <tr key={j} style={{ height: 52 }}>
+                              <td><div className="skeleton skeleton-text--xs" style={{ width: 20, margin: '0 auto' }} /></td>
+                              <td><div className="skeleton skeleton-text--sm" style={{ width: '70%' }} /></td>
+                              <td>
+                                <div className="skeleton skeleton-text--sm" style={{ width: '90%', marginBottom: 4 }} />
+                                <div className="skeleton skeleton-text--sm" style={{ width: '60%' }} />
+                              </td>
+                              <td><div className="skeleton skeleton-text--xs" style={{ width: 80 }} /></td>
+                              <td>
+                                <div style={{ display: 'flex', gap: 6 }}>
+                                  <div className="skeleton skeleton-text--sm" style={{ width: 36, height: 24 }} />
+                                  <div className="skeleton skeleton-text--sm" style={{ width: 50, height: 24 }} />
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                </div>
+              ))}
+            </>
+          ) : filtered.length === 0 ? (
         <div className="table-card">
           <div className="table-empty" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, padding: '32px 16px' }}>
             <svg viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5" width="40" height="40">

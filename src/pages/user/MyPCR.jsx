@@ -400,7 +400,41 @@ export default function MyPCR({ pcrList, loading, initialSelectedPCR, onClearSel
       {/* ── Table ── */}
       <div className="table-card">
         {isLoadingData ? (
-          <div className="table-empty">Loading PCR records...</div>
+          <div className="table-card">
+            <table className="tbl">
+              <thead>
+                <tr>
+                  <th style={{ width: '4%'  }}>#</th>
+                  <th style={{ width: '10%' }}>Period</th>
+                  <th style={{ width: '22%' }}>Name</th>
+                  <th style={{ width: '13%' }}>Date Created</th>
+                  <th style={{ width: '13%' }}>Core Pillars</th>
+                  <th style={{ width: '13%' }}>Strategic Pillars</th>
+                  <th style={{ width: '13%' }}>Support Pillars</th>
+                  <th style={{ width: '13%' }}>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <tr key={i} style={{ height: 52 }}>
+                    <td><div className="skeleton skeleton-text--xs" style={{ width: 20, margin: '0 auto' }} /></td>
+                    <td><div className="skeleton skeleton-text--sm" style={{ width: 60 }} /></td>
+                    <td><div className="skeleton skeleton-text--sm" style={{ width: '80%' }} /></td>
+                    <td><div className="skeleton skeleton-text--sm" style={{ width: 90 }} /></td>
+                    <td><div className="skeleton skeleton-text--sm" style={{ width: 70 }} /></td>
+                    <td><div className="skeleton skeleton-text--sm" style={{ width: 70 }} /></td>
+                    <td><div className="skeleton skeleton-text--sm" style={{ width: 70 }} /></td>
+                    <td>
+                      <div style={{ display: 'flex', gap: 6 }}>
+                        <div className="skeleton skeleton-text--sm" style={{ width: 36, height: 24 }} />
+                        <div className="skeleton skeleton-text--sm" style={{ width: 50, height: 24 }} />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         ) : filteredPCR.length === 0 ? (
           <div className="table-empty">No PCR records found.</div>
         ) : (

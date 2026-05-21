@@ -87,20 +87,98 @@ export default function AdminDashboard() {
   const maxCount = Math.max(...monthlyData.map((m) => m.count), 1)
 
   // ── Loading state ──
-  if (isLoading) {
+    if (isLoading) {
     return (
       <div className="shell">
         <Sidebar />
         <main className="main">
+
+          {/* Header */}
           <div className="main-header">
             <div>
-              <h1 className="main-title">Dashboard</h1>
-              <p className="page-sub">Employee analytics overview</p>
+              <div className="skeleton skeleton-text--lg" style={{ width: 140 }} />
+              <div className="skeleton skeleton-text--sm" style={{ width: 200, marginTop: 6 }} />
             </div>
           </div>
-          <div style={{ padding: '40px', textAlign: 'center', color: '#888' }}>
-            Loading dashboard data...
+
+          {/* Stat Cards */}
+          <div className="stats-grid">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div className="skeleton-card" key={i}>
+                <div className="skeleton skeleton-text--sm" style={{ width: '50%' }} />
+                <div className="skeleton skeleton-text--lg" style={{ width: '30%', marginTop: 8 }} />
+                <div className="skeleton skeleton-text--xs" style={{ width: '60%', marginTop: 6 }} />
+              </div>
+            ))}
           </div>
+
+          {/* Mid Grid */}
+          <div className="mid-grid">
+
+            {/* Recent Employees skeleton */}
+            <div className="skeleton-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
+                <div className="skeleton skeleton-text--sm" style={{ width: 140 }} />
+                <div className="skeleton skeleton-text--sm" style={{ width: 50 }} />
+              </div>
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div className="skeleton-row" key={i}>
+                  <div className="skeleton" style={{ width: 16, height: 12, borderRadius: 4 }} />
+                  <div className="skeleton skeleton-avatar" />
+                  <div style={{ flex: 1 }}>
+                    <div className="skeleton skeleton-text--full" style={{ marginBottom: 4 }} />
+                    <div className="skeleton skeleton-text--half" />
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
+                    <div className="skeleton skeleton-text--sm" style={{ width: 50 }} />
+                    <div className="skeleton skeleton-text--xs" style={{ width: 70 }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Monthly Chart skeleton */}
+            <div className="skeleton-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
+                <div className="skeleton skeleton-text--sm" style={{ width: 160 }} />
+                <div className="skeleton skeleton-text--sm" style={{ width: 60 }} />
+              </div>
+              <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, height: 100, marginBottom: 16 }}>
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="skeleton"
+                    style={{ flex: 1, height: `${Math.random() * 60 + 20}%`, borderRadius: '4px 4px 0 0' }}
+                  />
+                ))}
+              </div>
+              <div style={{ borderTop: '1px solid #f0f0f0', paddingTop: 12 }}>
+                <div className="skeleton skeleton-text--sm" style={{ width: 100, marginBottom: 12 }} />
+                <div className="skeleton skeleton-text--lg" style={{ width: 60, marginBottom: 8 }} />
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div className="skeleton-row" key={i}>
+                    <div className="skeleton skeleton-avatar" style={{ width: 28, height: 28 }} />
+                    <div style={{ flex: 1 }}>
+                      <div className="skeleton skeleton-text--full" style={{ marginBottom: 4 }} />
+                      <div className="skeleton skeleton-text--half" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Mini Stats */}
+          <div className="bottom-grid">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div className="skeleton-card" key={i}>
+                <div className="skeleton skeleton-text--sm" style={{ width: '50%' }} />
+                <div className="skeleton skeleton-text--lg" style={{ width: '40%', marginTop: 8 }} />
+                <div className="skeleton skeleton-text--xs" style={{ width: '60%', marginTop: 6 }} />
+              </div>
+            ))}
+          </div>
+
         </main>
       </div>
     )
