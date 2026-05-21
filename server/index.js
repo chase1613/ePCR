@@ -13,9 +13,13 @@ const forgotPasswordRoutes = require('./routes/forgotPasswordRoutes')
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: [
+    'http://localhost:5173',  // dev
+    'http://localhost:4173',  // preview
+  ],
   credentials: true,
 }))
+
 app.use(express.json())
 app.use('/api/pcr', pcrRoutes);
 app.use(express.urlencoded({ extended: true }))
