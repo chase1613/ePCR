@@ -67,7 +67,7 @@ export default function Reports() {
     const c = getColor(u.id)
     const lastSeen = formatLastSeen(u.last_seen, online)
     return (
-      <tr key={u.id}>
+      <tr>
         <td className="t-muted" style={{ textAlign: 'center' }}>{idx + 1}</td>
         <td>
           <div className="t-name-cell">
@@ -102,7 +102,8 @@ export default function Reports() {
         <td>
           {lastSeen ? (
             <span className={`last-seen-chip ${online ? 'last-seen-chip--online' : ''}`}>
-              {online && '●  '}{lastSeen}
+              {online && <span className="avatar-online-dot" style={{ marginRight: 6 }} />}
+              {lastSeen}
             </span>
           ) : (
             <span className="never-badge">Never logged in</span>
