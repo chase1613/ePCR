@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
+import { useQueryClient, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons'
@@ -59,23 +59,21 @@ export default function CreatePCR() {
   const [submitting,        setSubmitting]        = useState(false)
   const [selectedObj,       setSelectedObj]       = useState('')
   const [pillarCommitments, setPillarCommitments] = useState(EMPTY_PILLARS)
-  const [pillarsData,       setPillarsData]       = useState(EMPTY_PILLARS)
-  const [pillarsLoading,    setPillarsLoading]    = useState(true)
   const [pillarPage, setPillarPage] = useState(1)
   const [selectMode, setSelectMode] = useState(false)
 
-  useEffect(() => {
-      document.title = 'Create | ePCR'
-      return () => { document.title = 'ePCR' }
-    }, [])
+      useEffect(() => {
+          document.title = 'Create | ePCR'
+          return () => { document.title = 'ePCR' }
+        }, [])
 
-  useEffect(() => {
-    const fetchPillars = async () => {
-      try {
+      const { data: pillarsData = EMPTY_PILLARS, isLoading: pillarsLoading } = useQuery({
+      queryKey: ['pillars', form.department],
+      queryFn:  async () => {
         const token = localStorage.getItem('token')
         const { data } = await axios.get(`${API}/pillars`, {
           headers: { Authorization: `Bearer ${token}` },
-          params: { division: form.department },
+          params:  { division: form.department },
         })
         const grouped = {
           'Core Function':      [],
@@ -93,15 +91,11 @@ export default function CreatePCR() {
             })
           }
         })
-        setPillarsData(grouped)
-      } catch (err) {
-        console.error('Failed to fetch pillars:', err.message)
-      } finally {
-        setPillarsLoading(false)
-      }
-    }
-    fetchPillars()
-  }, [form.department])
+        return grouped
+      },
+      enabled:   !!form.department,
+      staleTime: 1000 * 60 * 5,
+    })
 
   const allObjectivesFilled = Object.values(pillarCommitments).some((a) => a.length > 0)
   const hasCommits          = Object.values(pillarCommitments).some((a) => a.length > 0)
