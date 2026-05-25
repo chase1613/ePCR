@@ -189,27 +189,41 @@ async function generateIPCRExcel(data, outputStream) {
     }
     rowHeight(rowNum, 28); rowNum++;
 
-    for (let i = 0; i < rows.length; i++) {
-      const row = rows[i];
-      setCell(rowNum, 1, row.mfo || '', { size: 8, align: 'left',   valign: 'middle', wrap: true,  border: true });
-      setCell(rowNum, 2, row.si  || '', { size: 8, align: 'left',   valign: 'middle', wrap: true,  border: true });
-      setCell(rowNum, 3, row.acc || '', { size: 8, align: 'left',   valign: 'middle', wrap: true,  border: true });
-      setCell(rowNum, 4, row.q   || '', { size: 8, align: 'center', valign: 'middle', wrap: false, border: true, fill: RATING_BG });
-      setCell(rowNum, 5, row.e   || '', { size: 8, align: 'center', valign: 'middle', wrap: false, border: true, fill: RATING_BG });
-      setCell(rowNum, 6, row.t   || '', { size: 8, align: 'center', valign: 'middle', wrap: false, border: true, fill: RATING_BG });
+    if (rows.length === 0) {
+      mergeAndSet(rowNum, 1, rowNum, 3, 'N/A', {
+        size: 8, align: 'left', valign: 'middle', wrap: true, border: true,
+      });
+      setCell(rowNum, 4, '', { size: 8, align: 'center', valign: 'middle', border: true, fill: RATING_BG });
+      setCell(rowNum, 5, '', { size: 8, align: 'center', valign: 'middle', border: true, fill: RATING_BG });
+      setCell(rowNum, 6, '', { size: 8, align: 'center', valign: 'middle', border: true, fill: RATING_BG });
+      setCell(rowNum, 7, '', { size: 8, align: 'center', valign: 'middle', border: true, fill: RATING_BG });
+      setCell(rowNum, 8, '', { size: 8, align: 'left',   valign: 'middle', border: true });
+      rowHeight(rowNum, 40);
+      rowNum++;
+    } else {
+    
+      for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        setCell(rowNum, 1, row.mfo || '', { size: 8, align: 'left',   valign: 'middle', wrap: true,  border: true });
+        setCell(rowNum, 2, row.si  || '', { size: 8, align: 'left',   valign: 'middle', wrap: true,  border: true });
+        setCell(rowNum, 3, row.acc || '', { size: 8, align: 'left',   valign: 'middle', wrap: true,  border: true });
+        setCell(rowNum, 4, row.q   || '', { size: 8, align: 'center', valign: 'middle', wrap: false, border: true, fill: RATING_BG });
+        setCell(rowNum, 5, row.e   || '', { size: 8, align: 'center', valign: 'middle', wrap: false, border: true, fill: RATING_BG });
+        setCell(rowNum, 6, row.t   || '', { size: 8, align: 'center', valign: 'middle', wrap: false, border: true, fill: RATING_BG });
 
-      const aCell = worksheet.getRow(rowNum).getCell(7);
-      aCell.value = {
-        formula: `IFERROR((D${rowNum}+E${rowNum}+F${rowNum})/3,"")`,
-        result: ''
-      };
-      aCell.font      = { size: 8 };
-      aCell.alignment = { horizontal: 'center', vertical: 'middle' };
-      aCell.border    = allThin;
-      aCell.numFmt    = '0.00';
+        const aCell = worksheet.getRow(rowNum).getCell(7);
+        aCell.value = {
+          formula: `IFERROR((D${rowNum}+E${rowNum}+F${rowNum})/3,"")`,
+          result: ''
+        };
+        aCell.font      = { size: 8 };
+        aCell.alignment = { horizontal: 'center', vertical: 'middle' };
+        aCell.border    = allThin;
+        aCell.numFmt    = '0.00';
 
-      setCell(rowNum, 8, row.rem || '', { size: 8, align: 'left', valign: 'middle', wrap: true, border: true });
-      rowHeight(rowNum, 40); rowNum++;
+        setCell(rowNum, 8, row.rem || '', { size: 8, align: 'left', valign: 'middle', wrap: true, border: true });
+        rowHeight(rowNum, 40); rowNum++;
+      }
     }
 
     mergeAndSet(rowNum, 1, rowNum, 3, `${subLabel} Sub Total`, {
