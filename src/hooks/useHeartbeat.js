@@ -16,7 +16,7 @@ export function useHeartbeat() {
     }
 
     ping()
-    const interval = setInterval(ping, 1000 * 60 * 3) // every 30 seconds
+    const interval = setInterval(ping, 1000 * 60 * 1) // every 1 minute
     return () => clearInterval(interval)
   }, [])
 }

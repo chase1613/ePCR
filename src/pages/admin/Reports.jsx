@@ -5,7 +5,7 @@ import Sidebar from '../../components/layout/Sidebar'
 import './Reports.css'
 
 const API = import.meta.env.VITE_API_URL
-const ONLINE_THRESHOLD_MINUTES = 10
+const ONLINE_THRESHOLD_MINUTES = 2
 
 const avatarColors = [
   { bg: '#E6F1FB', color: '#0C447C' },
