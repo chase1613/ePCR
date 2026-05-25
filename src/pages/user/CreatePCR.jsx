@@ -61,6 +61,7 @@ export default function CreatePCR() {
   const [pillarCommitments, setPillarCommitments] = useState(EMPTY_PILLARS)
   const [pillarPage, setPillarPage] = useState(1)
   const [selectMode, setSelectMode] = useState(false)
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
 
       useEffect(() => {
           document.title = 'Create | ePCR'
@@ -119,40 +120,38 @@ export default function CreatePCR() {
 
   // ── Generate & save PCR ──
   const handleGenerate = async () => {
-    setSubmitting(true)
-    try {
-      const token = localStorage.getItem('token')
+  setSubmitting(true)
+  try {
+    const token = localStorage.getItem('token')
 
-      await axios.post(`${API}/pcr`, {
-        period:    form.period,
-        name:      form.name,
-        position:  form.position,
-        division:  form.department,
-        core:      pillarCommitments['Core Function'].map(p => ({
-          id: p.id, name: p.name, indicator: p.indicator, target: p.target, weight: p.weight,
-        })),
-        strategic: pillarCommitments['Strategic Function'].map(p => ({
-          id: p.id, name: p.name, indicator: p.indicator, target: p.target, weight: p.weight,
-        })),
-        support:   pillarCommitments['Support Function'].map(p => ({
-          id: p.id, name: p.name, indicator: p.indicator, target: p.target, weight: p.weight,
-        })),
-      }, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+    await axios.post(`${API}/pcr`, {
+      period:    form.period,
+      name:      form.name,
+      position:  form.position,
+      division:  form.department,
+      core:      pillarCommitments['Core Function'].map(p => ({
+        id: p.id, name: p.name, indicator: p.indicator, target: p.target, weight: p.weight,
+      })),
+      strategic: pillarCommitments['Strategic Function'].map(p => ({
+        id: p.id, name: p.name, indicator: p.indicator, target: p.target, weight: p.weight,
+      })),
+      support:   pillarCommitments['Support Function'].map(p => ({
+        id: p.id, name: p.name, indicator: p.indicator, target: p.target, weight: p.weight,
+      })),
+    }, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
 
-      // ── Invalidate pcrs cache so MyPCR tab shows the new record instantly ──
-      queryClient.invalidateQueries({ queryKey: ['pcrs'] })
-
-      setSuccess(true)
-      setStep(3)
-    } catch (err) {
-      console.error('Failed to save PCR:', err.message)
-      alert(err.response?.data?.message || 'Failed to save PCR. Please try again.')
-    } finally {
-      setSubmitting(false)
-    }
+    queryClient.invalidateQueries({ queryKey: ['pcrs'] })
+    setSuccess(true)
+    setShowSuccessModal(true) // ← show modal first
+  } catch (err) {
+    console.error('Failed to save PCR:', err.message)
+    alert(err.response?.data?.message || 'Failed to save PCR. Please try again.')
+  } finally {
+    setSubmitting(false)
   }
+}
 
   const handleStep1Submit = (e) => {
     e.preventDefault()
@@ -627,6 +626,48 @@ export default function CreatePCR() {
           </div>
         </>
       )}
+
+        {/* ── Success Modal ── */}
+        {showSuccessModal && (
+          <div className="modal-overlay">
+            <div className="modal modal--sm" onClick={(e) => e.stopPropagation()}>
+              <div style={{
+                display: 'flex', flexDirection: 'column',
+                alignItems: 'center', gap: 16, padding: '8px 0 16px', textAlign: 'center'
+              }}>
+                <div style={{
+                  width: 64, height: 64, borderRadius: '50%',
+                  background: '#E1F5EE',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center'
+                }}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#085041" strokeWidth="1.8" width="32" height="32">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M8 12l3 3 5-5"/>
+                  </svg>
+                </div>
+                <div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: '#111', marginBottom: 6 }}>
+                    PCR Generated Successfully!
+                  </div>
+                  <div style={{ fontSize: 13, color: '#888', lineHeight: 1.6 }}>
+                    Your PCR for <strong>{form.period}</strong> has been saved.<br/>
+                    You can now download it as PDF or Excel.
+                  </div>
+                </div>
+                <button
+                  className="btn-save"
+                  style={{ width: '100%' }}
+                  onClick={() => {
+                    setShowSuccessModal(false)
+                    setStep(3)
+                  }}
+                >
+                  View
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
       {/* ══ STEP 3: Review Generated PCR ══ */}
       {step === 3 && (
