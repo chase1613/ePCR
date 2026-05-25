@@ -25,17 +25,15 @@ async function generateIPCRExcel(data, outputStream) {
 
   // ─── Column layout (A-J) ──────────────────────────────────
   worksheet.columns = [
-    { width: 22 },   // A — Discussed with / MFO
-    { width: 35 },   // B — Date (narrow) / SI
-    { width: 18 },   // C — Acc
-    { width: 7  },   // D — Q
-    { width: 7  },   // E — E
-    { width: 7  },   // F — T
-    { width: 7  },   // G — A
-    { width: 22 },   // H — Remarks (wider)
-    { width: 13 },   // I — sig Final Rating
-    { width: 22 },   // J — sig Date / Director name
-  ];
+  { width: 22 },   // A — Discussed with / MFO
+  { width: 25 },   // B — Date / SI
+  { width: 22 },   // C — Acc / Assessed by
+  { width: 10 },   // D — Q / Date
+  { width: 10 },   // E — E / (buffer)
+  { width: 10 },   // F — T / Final Rating  ← widened
+  { width: 10 },   // G — A / (buffer)
+  { width: 22 },   // H — Remarks / Date
+];
 
   // ─── Colors ───────────────────────────────────────────────
   const CORE_BG   = 'D9E1F2';
@@ -136,8 +134,6 @@ async function generateIPCRExcel(data, outputStream) {
   mergeAndSet(rowNum, 5, rowNum, 8, `Date: ${empDate}`, { align: 'right', valign: 'middle', size: 9 });
   rowHeight(rowNum, 14); rowNum++;
 
-  mergeAndSet(rowNum, 2, rowNum, 4, 'Date:', { align: 'left', valign: 'middle', size: 9 });
-  rowHeight(rowNum, 14); rowNum++;
 
   mergeAndSet(rowNum, 1, rowNum, 4, 'Division Chief/Field Officer',
     { align: 'center', valign: 'middle', bold: true, size: 10, color: 'FFC00000' });
@@ -425,78 +421,90 @@ async function generateIPCRExcel(data, outputStream) {
   rowHeight(rowNum, 45); rowNum++;
 
   // ─── Signature block ──────────────────────────────────────
-  rowNum++;
+rowNum++;
 
-  const sigStartRow = rowNum;
-  const sigEndRow   = rowNum + 4;
+const sigStartRow = rowNum;
+const sigEndRow   = rowNum + 4;
 
-  try { worksheet.mergeCells(sigStartRow, 1, sigEndRow, 1); } catch(_) {}
-  try { worksheet.mergeCells(sigStartRow, 2, sigEndRow, 3); } catch(_) {}
-  try { worksheet.mergeCells(sigStartRow, 4, sigEndRow, 7); } catch(_) {}
-  try { worksheet.mergeCells(sigStartRow, 8, sigEndRow, 8); } catch(_) {}
-  try { worksheet.mergeCells(sigStartRow, 9, sigEndRow, 9); } catch(_) {}
-  try { worksheet.mergeCells(sigStartRow,10, sigEndRow,10); } catch(_) {}
+try { worksheet.mergeCells(sigStartRow, 1, sigEndRow, 1); } catch(_) {}  // A: Discussed with
+try { worksheet.mergeCells(sigStartRow, 2, sigEndRow, 2); } catch(_) {}  // B: Date
+try { worksheet.mergeCells(sigStartRow, 3, sigEndRow, 5); } catch(_) {}  // C-E: Assessed by
+try { worksheet.mergeCells(sigStartRow, 6, sigEndRow, 6); } catch(_) {}  // F: Date
+try { worksheet.mergeCells(sigStartRow, 7, sigEndRow, 7); } catch(_) {}  // G: Final Rating
+try { worksheet.mergeCells(sigStartRow, 8, sigEndRow, 8); } catch(_) {}  // H: Date
 
-  const dcell = worksheet.getRow(sigStartRow).getCell(1);
-  dcell.value     = 'Discussed with';
-  dcell.font      = { bold: true, size: 9 };
-  dcell.alignment = { horizontal: 'center', vertical: 'top', wrapText: true };
-  dcell.border    = allThin;
+// Discussed with (col A)
+const dcell = worksheet.getRow(sigStartRow).getCell(1);
+dcell.value     = 'Discussed with';
+dcell.font      = { bold: true, size: 9 };
+dcell.alignment = { horizontal: 'center', vertical: 'top', wrapText: true };
+dcell.border    = allThin;
 
-  const datecell = worksheet.getRow(sigStartRow).getCell(2);
-  datecell.value     = 'Date:';
-  datecell.font      = { size: 9 };
-  datecell.alignment = { horizontal: 'left', vertical: 'top' };
-  datecell.border    = allThin;
+// Date (col B)
+const datecell = worksheet.getRow(sigStartRow).getCell(2);
+datecell.value     = 'Date:';
+datecell.font      = { size: 9 };
+datecell.alignment = { horizontal: 'left', vertical: 'top' };
+datecell.border    = allThin;
 
-  const acell = worksheet.getRow(sigStartRow).getCell(4);
-  acell.value = {
-    richText: [
-      { text: 'Assessed by:\n', font: { bold: true, size: 9 } },
-      { text: 'I hereby certify that I discussed my\nassessment of the performance with the\nemployee', font: { italic: true, size: 8 } },
-    ],
-  };
-  acell.alignment = { horizontal: 'center', vertical: 'top', wrapText: true };
-  acell.border    = allThin;
+// Assessed by (col C, spanning C-E)
+const acell = worksheet.getRow(sigStartRow).getCell(3);
+acell.value = {
+  richText: [
+    { text: 'Assessed by:\n', font: { bold: true, size: 9 } },
+    { text: 'I hereby certify that I discussed my\nassessment of the performance with the\nemployee', font: { italic: true, size: 8 } },
+  ],
+};
+acell.alignment = { horizontal: 'center', vertical: 'top', wrapText: true };
+acell.border    = allThin;
 
-  const d2 = worksheet.getRow(sigStartRow).getCell(8);
-  d2.value = 'Date:'; d2.font = { size: 9 };
-  d2.alignment = { horizontal: 'left', vertical: 'top' }; d2.border = allThin;
 
-  const fr = worksheet.getRow(sigStartRow).getCell(9);
-  fr.value = 'Final Rating'; fr.font = { size: 9 };
-  fr.alignment = { horizontal: 'center', vertical: 'top' }; fr.border = allThin;
 
-  const d3 = worksheet.getRow(sigStartRow).getCell(10);
-  d3.value = 'Date'; d3.font = { size: 9 };
-  d3.alignment = { horizontal: 'center', vertical: 'top' }; d3.border = allThin;
+const d2 = worksheet.getRow(sigStartRow).getCell(6);
+d2.value     = 'Date:';
+d2.font      = { size: 9 };
+d2.alignment = { horizontal: 'left', vertical: 'top' };
+d2.border    = allThin;
 
-  for (let r = sigStartRow; r <= sigEndRow; r++) rowHeight(r, 18);
-  rowNum = sigEndRow + 1;
+// Date (col H)
+const d3 = worksheet.getRow(sigStartRow).getCell(8);
+d3.value     = 'Date';
+d3.font      = { size: 9 };
+d3.alignment = { horizontal: 'center', vertical: 'top' };
+d3.border    = allThin;
 
-  // Names row
-  mergeAndSet(rowNum, 1, rowNum, 1, empName,
-    { bold: true, size: 9, align: 'center', valign: 'middle', wrap: true, border: true });
-  mergeAndSet(rowNum, 2, rowNum, 3, '', { border: true });
-  mergeAndSet(rowNum, 4, rowNum, 7, 'Division Chief/Field Officer',
-    { bold: true, size: 9, align: 'center', valign: 'middle', border: true });
-  mergeAndSet(rowNum, 8, rowNum, 8, '', { border: true });
-  mergeAndSet(rowNum, 9, rowNum, 9, '', { border: true });
-  mergeAndSet(rowNum,10, rowNum,10, dirName,
-    { bold: true, size: 9, align: 'center', valign: 'middle', wrap: true, border: true });
-  rowHeight(rowNum, 20); rowNum++;
+const fr = worksheet.getRow(sigStartRow).getCell(7);
+fr.value     = 'Final Rating';
+fr.font      = { size: 9 };
+fr.alignment = { horizontal: 'center', vertical: 'top' };
+fr.border    = allThin;
 
-  // Position row
-  mergeAndSet(rowNum, 1, rowNum, 1, empPos,
-    { size: 8, align: 'center', valign: 'middle', wrap: true, border: true });
-  mergeAndSet(rowNum, 2, rowNum, 3, '', { border: true });
-  mergeAndSet(rowNum, 4, rowNum, 7, 'Position',
-    { size: 8, align: 'center', valign: 'middle', border: true, fill: WHITE });
-  mergeAndSet(rowNum, 8, rowNum, 8, '', { border: true });
-  mergeAndSet(rowNum, 9, rowNum, 9, '', { border: true });
-  mergeAndSet(rowNum,10, rowNum,10, dirTitle,
-    { size: 8, align: 'center', valign: 'middle', border: true });
-  rowHeight(rowNum, 16);
+for (let r = sigStartRow; r <= sigEndRow; r++) {
+  rowHeight(r, 18);
+}
+rowNum = sigEndRow + 1;
+
+ // Names row
+mergeAndSet(rowNum, 1, rowNum, 1, empName,
+  { bold: true, size: 9, align: 'center', valign: 'middle', wrap: true, border: true });
+mergeAndSet(rowNum, 2, rowNum, 2, '', { border: true });
+mergeAndSet(rowNum, 3, rowNum, 5, 'Division Chief/Field Officer',  // ← span C-E
+  { bold: true, size: 9, align: 'center', valign: 'middle', border: true });
+mergeAndSet(rowNum, 6, rowNum, 7, '', { border: true });
+mergeAndSet(rowNum, 8, rowNum, 8, dirName,
+  { bold: true, size: 9, align: 'center', valign: 'middle', wrap: true, border: true });
+rowHeight(rowNum, 20); rowNum++;
+
+// Position row
+mergeAndSet(rowNum, 1, rowNum, 1, empPos,
+  { size: 8, align: 'center', valign: 'middle', wrap: true, border: true });
+mergeAndSet(rowNum, 2, rowNum, 2, '', { border: true });
+mergeAndSet(rowNum, 3, rowNum, 5, 'Position',  // ← span C-E to match above
+  { size: 8, align: 'center', valign: 'middle', border: true });
+mergeAndSet(rowNum, 6, rowNum, 7, '', { border: true });
+mergeAndSet(rowNum, 8, rowNum, 8, dirTitle,
+  { size: 8, align: 'center', valign: 'middle', border: true });
+rowHeight(rowNum, 16);
 
   // ─── Write ────────────────────────────────────────────────
   await workbook.xlsx.write(outputStream);
