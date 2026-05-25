@@ -2,11 +2,17 @@ const rateLimit        = require('express-rate-limit')
 const { ipKeyGenerator } = require('express-rate-limit')
 
 const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max:      10,              // max 10 login attempts
-  message:  { message: 'Too many login attempts. Please try again after 15 minutes.' },
+  windowMs: 15 * 60 * 1000,
+  max: 5,
   standardHeaders: true,
-  legacyHeaders:   false,
+  legacyHeaders: false,
+  skipSuccessfulRequests: true,
+
+  handler: (req, res) => {
+    res.status(429).json({
+      message: 'Too many login attempts. Please try again after 15 minutes.',
+    })
+  },
 })
 
 
