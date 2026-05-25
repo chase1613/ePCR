@@ -460,14 +460,16 @@ export default function CreatePCR() {
               Done
             </button>
           )}
-          <button
-            className={`btn-sm ${selectMode ? 'btn-danger' : ''}`}
-            style={{ fontSize: 12 }}
-            onClick={() => setSelectMode((v) => !v)}
-          >
-            {selectMode ? 'Cancel' : 'Select'}
-          </button>
-          {!selectMode && (
+          {pillars.length > 0 && (
+              <button
+                className={`btn-sm ${selectMode ? 'btn-danger' : ''}`}
+                style={{ fontSize: 12 }}
+                onClick={() => setSelectMode((v) => !v)}
+              >
+                {selectMode ? 'Cancel' : 'Select'}
+              </button>
+            )}
+          {!selectMode && pillars.length > 0 && (
             <span className="field-hint" style={{ margin: 0 }}>Click "+ Add" to include a pillar</span>
           )}
         </div>
@@ -476,7 +478,14 @@ export default function CreatePCR() {
       {pillarsLoading ? (
         <div style={{ padding: '20px', color: '#888', textAlign: 'center' }}>Loading pillars...</div>
       ) : pillars.length === 0 ? (
-        <div style={{ padding: '20px', color: '#888', textAlign: 'center' }}>No pillars available for {selectedObj}.</div>
+         <div style={{ padding: '32px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5" width="48" height="48">
+            <path d="M9 13h6m-3-3v6m-9 1V7a2 2 0 0 1 2-2h4l2 2h4a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/>
+          </svg>
+          <p style={{ margin: 0, color: '#888', fontSize: 14 }}>
+            No pillars available for <strong>{selectedObj}</strong>.
+          </p>
+        </div>
       ) : (
         <>
           <table className="tbl" style={{ tableLayout: 'fixed', width: '100%' }}>

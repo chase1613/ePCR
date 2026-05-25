@@ -273,37 +273,36 @@ const updateProfileMutation = useMutation({
 
         {/* VIEW MODE */}
         {!pwMode && (
-          <div className="profile-fields">
-            <div className="profile-field">
+        <div className="profile-fields">
+          <div className="profile-field" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row' }}>
+            <div>
               <div className="profile-field__label">Current password</div>
               <div className="profile-field__value">••••••••</div>
             </div>
-
             {!editMode && (
-              <div style={{ display: 'flex', justifyContent: 'center', padding: '16px 0 8px' }}>
-                <button
-                  className="card-action"
-                  onClick={() => setPwMode(true)}
-                  style={{
-                    display:      'inline-flex',
-                    alignItems:   'center',
-                    gap:          '6px',
-                    padding:      '8px 20px',
-                    border:       '1px solid currentColor',
-                    borderRadius: '8px',
-                    fontSize:     '13px',
-                    fontWeight:   '500',
-                    cursor:       'pointer',
-                    background:   'transparent',
-                  }}
-                >
-                  <ion-icon name="lock-closed-outline" style={{ fontSize: '15px' }} />
-                  Change password
-                </button>
-              </div>
+              <button
+                className="card-action"
+                onClick={() => setPwMode(true)}
+                style={{
+                  display:      'inline-flex',
+                  alignItems:   'center',
+                  gap:          '6px',
+                  padding:      '8px 20px',
+                  border:       '1px solid currentColor',
+                  borderRadius: '8px',
+                  fontSize:     '13px',
+                  fontWeight:   '500',
+                  cursor:       'pointer',
+                  background:   'transparent',
+                }}
+              >
+                <ion-icon name="lock-closed-outline" style={{ fontSize: '15px' }} />
+                Change password
+              </button>
             )}
           </div>
-        )}
+        </div>
+      )}
 
         {/* EDIT MODE */}
         {pwMode && (
