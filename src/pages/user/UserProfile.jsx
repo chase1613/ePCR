@@ -40,17 +40,17 @@ const getInitialProfile = () => {
 }
 
 // ── Fetcher ──
-const changePasswordFn = async ({ email, newPassword }) => {
+const changePasswordFn = async ({ currentPassword, newPassword }) => {
   const token = localStorage.getItem('token')
   const { data } = await axios.patch(
     `${API}/auth/change-password`,
-    { newPassword },
+    { currentPassword, newPassword },
     { headers: { Authorization: `Bearer ${token}` } }
   )
   return data
 }
 
-const emptyPwForm = { newPassword: '', confirmPassword: '' }
+const emptyPwForm = { currentPassword: '', newPassword: '', confirmPassword: '' }
 
 export default function UserProfile() {
   const [profile,     setProfile]     = useState(getInitialProfile)
@@ -63,6 +63,7 @@ export default function UserProfile() {
   const [pwErrors,    setPwErrors]    = useState({})
   const [showNew,     setShowNew]     = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
+  const [showCurrent, setShowCurrent] = useState(false)
 
   useEffect(() => {
       document.title = 'User Profile | ePCR'
@@ -107,10 +108,13 @@ export default function UserProfile() {
       showMsg('Password changed successfully.')
     },
     onError: (err) => {
-      setPwErrors({
-        newPassword: err.response?.data?.message || 'Failed to change password. Please try again.',
-      })
-    },
+  const msg = err.response?.data?.message || 'Failed to change password.'
+    if (msg.toLowerCase().includes('current') || msg.toLowerCase().includes('incorrect')) {
+      setPwErrors({ currentPassword: msg })
+    } else {
+      setPwErrors({ newPassword: msg })
+    }
+  },
   })
 
   // ── Password handlers ──
@@ -122,23 +126,28 @@ export default function UserProfile() {
   }
 
   const validatePassword = () => {
-    const errs = {}
-    if (!pwForm.newPassword)
-      errs.newPassword = 'Please enter a new password.'
-    else if (!PW_RULES.every((r) => r.test(pwForm.newPassword)))
-      errs.newPassword = 'Password does not meet all requirements.'
-    if (!pwForm.confirmPassword)
-      errs.confirmPassword = 'Please confirm your new password.'
-    else if (pwForm.newPassword !== pwForm.confirmPassword)
-      errs.confirmPassword = 'Passwords do not match.'
-    return errs
-  }
+  const errs = {}
+  if (!pwForm.currentPassword)
+    errs.currentPassword = 'Please enter your current password.'
+  if (!pwForm.newPassword)
+    errs.newPassword = 'Please enter a new password.'
+  else if (!PW_RULES.every((r) => r.test(pwForm.newPassword)))
+    errs.newPassword = 'Password does not meet all requirements.'
+  if (!pwForm.confirmPassword)
+    errs.confirmPassword = 'Please confirm your new password.'
+  else if (pwForm.newPassword !== pwForm.confirmPassword)
+    errs.confirmPassword = 'Passwords do not match.'
+  return errs
+}
 
-  const handlePwSave = (e) => {
+    const handlePwSave = (e) => {
     e.preventDefault()
     const errs = validatePassword()
     if (Object.keys(errs).length) return setPwErrors(errs)
-    changePasswordMutation.mutate({ newPassword: pwForm.newPassword })
+    changePasswordMutation.mutate({
+      currentPassword: pwForm.currentPassword,
+      newPassword: pwForm.newPassword,
+    })
   }
 
   const handlePwCancel = () => {
@@ -146,6 +155,7 @@ export default function UserProfile() {
     setPwErrors({})
     setShowNew(false)
     setShowConfirm(false)
+    setShowCurrent(false)
     setPwMode(false)
     changePasswordMutation.reset()
   }
@@ -307,6 +317,30 @@ const updateProfileMutation = useMutation({
         {/* EDIT MODE */}
         {pwMode && (
           <form onSubmit={handlePwSave} noValidate>
+
+            
+           {/* ── Current Password ── */}
+      <div className="form-row" style={{ marginBottom: 16, maxWidth: '50%' }}>
+        <label className="form-label">Current Password</label>
+        <div className="input-wrap">
+          <input
+            className={`form-input ${pwErrors.currentPassword ? 'input-error' : ''}`}
+            type={showCurrent ? 'text' : 'password'}
+            name="currentPassword"
+            placeholder="Enter your current password"
+            value={pwForm.currentPassword}
+            onChange={handlePwChange}
+            autoFocus
+          />
+          <button type="button" className="pw-toggle" onClick={() => setShowCurrent((v) => !v)}>
+            <EyeIcon open={showCurrent} />
+          </button>
+        </div>
+        {pwErrors.currentPassword && (
+          <span className="field-error">{pwErrors.currentPassword}</span>
+        )}
+      </div>
+
             <div className="form-grid-2">
 
               {/* New Password */}
