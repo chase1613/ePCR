@@ -756,7 +756,7 @@ export default function CreatePCR({ onViewPCR }) {
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3">
               <circle cx="8" cy="8" r="7"/><path d="M8 7v5M8 5v.5"/>
             </svg>
-            <span>Your PCR has been generated successfully for <strong>{form.period}</strong>. Ratings will be filled in during the evaluation period.</span>
+            <span>Please review your PCR details for {form.period} before clicking generate. Ratings will be filled in during the evaluation period.</span>
           </div>
 
           <div className="modal-footer">
