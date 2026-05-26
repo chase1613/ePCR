@@ -85,7 +85,12 @@ export default function MyPCR({ pcrList, loading, initialSelectedPCR, onClearSel
 
   const pcrs          = pcrList || fetchedPCRs
   const isLoadingData = pcrList ? loading : isLoading
-  const allPeriods    = [...new Set(pcrs.map((r) => r.period))]
+  const allPeriods = [...new Set(pcrs.map((r) => r.period))].sort((a, b) => {
+    const [qa, ya] = a.split(' ')
+    const [qb, yb] = b.split(' ')
+    if (ya !== yb) return Number(ya) - Number(yb)
+    return qa.localeCompare(qb)
+  })
 
   const filteredPCR = pcrs.filter((r) => {
     const q             = search.toLowerCase()
