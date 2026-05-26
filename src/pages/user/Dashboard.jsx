@@ -55,7 +55,9 @@ export default function UserDashboard() {
 
   // ── Derived stats ──
   const totalPCR    = pcrs.length
-  const YEARS       = [...new Set(pcrs.map(r => new Date(r.created_at).getFullYear()))].sort((a, b) => b - a)
+  const YEARS = pcrs.length > 0
+  ? [...new Set(pcrs.map(r => new Date(r.created_at).getFullYear()))].sort((a, b) => b - a)
+  : [currentYear]
 
   // ── Top 3 recent ──
   const recentPCR = [...pcrs]
@@ -269,10 +271,7 @@ export default function UserDashboard() {
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(+e.target.value)}
               >
-                {YEARS.length === 0
-                  ? <option value={currentYear}>{currentYear}</option>
-                  : YEARS.map((y) => <option key={y} value={y}>{y}</option>)
-                }
+                {YEARS.map((y) => <option key={y} value={y}>{y}</option>)}
               </select>
             </div>
 
