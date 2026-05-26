@@ -120,7 +120,8 @@ async function generateIPCRExcel(data, outputStream) {
     { align: 'left', valign: 'middle', bold: true, size: 9, wrap: true });
   rowHeight(rowNum, 36); rowNum++;
 
-  rowHeight(rowNum, 8); rowNum++;
+  // Signature space for employee
+  rowHeight(rowNum, 50); rowNum++;
 
   mergeAndSet(rowNum, 1, rowNum, 8, empName,
     { align: 'right', valign: 'middle', bold: true, size: 10 });
@@ -134,6 +135,8 @@ async function generateIPCRExcel(data, outputStream) {
   mergeAndSet(rowNum, 5, rowNum, 8, `Date: ${empDate}`, { align: 'right', valign: 'middle', size: 9 });
   rowHeight(rowNum, 14); rowNum++;
 
+  // Signature space for director
+  rowHeight(rowNum, 50); rowNum++;
 
   mergeAndSet(rowNum, 1, rowNum, 4, 'Division Chief/Field Officer',
     { align: 'center', valign: 'middle', bold: true, size: 10, color: 'FFC00000' });
