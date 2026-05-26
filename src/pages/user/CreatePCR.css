@@ -7,3 +7,45 @@
   font-size: 16px;
   font-weight: 700;
 }
+
+.pillar-section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.pillar-section__header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 12px;
+}
+
+.pillar-section__header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pillar-search-row {
+  padding: 8px 0 4px;
+}
+
+.pillar-search-row .search-box {
+  width: 280px;
+  font-size: 13px;
+}
+
+.pillar-selected-count {
+  font-size: 13px;
+  color: #555;
+  font-weight: bold;
+}
+
+.pillar-section__header-left .search-box {
+  width: 220px;
+  font-size: 13px;
+  padding: 4px 10px;
+  height: 32px;
+}

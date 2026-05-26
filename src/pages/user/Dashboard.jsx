@@ -30,6 +30,7 @@ export default function UserDashboard() {
   const [selectedPCR, setSelectedPCR] = useState(null) 
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth())
   const [selectedYear,  setSelectedYear]  = useState(new Date().getFullYear())
+  const [pendingViewPCR, setPendingViewPCR] = useState(null)
 
   const user        = JSON.parse(localStorage.getItem('user'))
   const currentYear = new Date().getFullYear()
@@ -88,14 +89,24 @@ export default function UserDashboard() {
 
   const renderTab = () => {
     if (tab === 'pcr') return (
-      <MyPCR
-        pcrList={pcrs}
-        loading={isLoading}
-        initialSelectedPCR={selectedPCR}
-        onClearSelected={() => setSelectedPCR(null)}
+    <MyPCR
+      pcrList={pcrs}
+      loading={isLoading}
+      initialSelectedPCR={pendingViewPCR || selectedPCR}
+      onClearSelected={() => {
+        setPendingViewPCR(null)
+        setSelectedPCR(null)
+      }}
+    />
+    )
+    if (tab === 'create') return (
+      <CreatePCR
+        onViewPCR={(pcr) => {
+          setPendingViewPCR(pcr)
+          setTab('pcr')
+        }}
       />
     )
-    if (tab === 'create')  return <CreatePCR />
     if (tab === 'profile') return <UserProfile />
 
     if (isLoading) {

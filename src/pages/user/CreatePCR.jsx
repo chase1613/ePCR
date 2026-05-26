@@ -43,7 +43,7 @@ const getDefaultPeriod = () => {
 
 const PERIOD_OPTIONS = generatePeriodOptions()
 
-export default function CreatePCR() {
+export default function CreatePCR({ onViewPCR }) {
   // ── TanStack Query client for cache invalidation ──
   const queryClient = useQueryClient()
 
@@ -62,6 +62,9 @@ export default function CreatePCR() {
   const [pillarPage, setPillarPage] = useState(1)
   const [selectMode, setSelectMode] = useState(false)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [createdPCRId, setCreatedPCRId] = useState(null)
+  const [createdPCR, setCreatedPCR] = useState(null)
+  const [pillarSearch, setPillarSearch] = useState('')
 
       useEffect(() => {
           document.title = 'Create | ePCR'
@@ -116,42 +119,55 @@ export default function CreatePCR() {
     setSubmitting(false)
     setSelectedObj('')
     setPillarCommitments(EMPTY_PILLARS)
+    setCreatedPCRId(null)
+    setCreatedPCR(null)
   }
 
   // ── Generate & save PCR ──
-  const handleGenerate = async () => {
-  setSubmitting(true)
-  try {
-    const token = localStorage.getItem('token')
+    const handleGenerate = async () => {
+    setSubmitting(true)
+    try {
+      const token = localStorage.getItem('token')
 
-    await axios.post(`${API}/pcr`, {
-      period:    form.period,
-      name:      form.name,
-      position:  form.position,
-      division:  form.department,
-      core:      pillarCommitments['Core Function'].map(p => ({
-        id: p.id, name: p.name, indicator: p.indicator, target: p.target, weight: p.weight,
-      })),
-      strategic: pillarCommitments['Strategic Function'].map(p => ({
-        id: p.id, name: p.name, indicator: p.indicator, target: p.target, weight: p.weight,
-      })),
-      support:   pillarCommitments['Support Function'].map(p => ({
-        id: p.id, name: p.name, indicator: p.indicator, target: p.target, weight: p.weight,
-      })),
-    }, {
-      headers: { Authorization: `Bearer ${token}` },
+      const { data: newPCR } = await axios.post(`${API}/pcr`, {
+        period:    form.period,
+        name:      form.name,
+        position:  form.position,
+        division:  form.department,
+        core:      pillarCommitments['Core Function'].map(p => ({
+          id: p.id, name: p.name, indicator: p.indicator, target: p.target, weight: p.weight,
+        })),
+        strategic: pillarCommitments['Strategic Function'].map(p => ({
+          id: p.id, name: p.name, indicator: p.indicator, target: p.target, weight: p.weight,
+        })),
+        support:   pillarCommitments['Support Function'].map(p => ({
+          id: p.id, name: p.name, indicator: p.indicator, target: p.target, weight: p.weight,
+        })),
+      }, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+
+      queryClient.invalidateQueries({ queryKey: ['pcrs'] })
+      setCreatedPCR({
+      id:         newPCR.id,
+      name:       form.name,
+      position:   form.position,
+      division:   form.department,
+      period:     form.period,
+      created_at: new Date().toISOString(),
+      core:       pillarCommitments['Core Function'],
+      strategic:  pillarCommitments['Strategic Function'],
+      support:    pillarCommitments['Support Function'],
     })
-
-    queryClient.invalidateQueries({ queryKey: ['pcrs'] })
-    setSuccess(true)
-    setShowSuccessModal(true) // ← show modal first
-  } catch (err) {
-    console.error('Failed to save PCR:', err.message)
-    alert(err.response?.data?.message || 'Failed to save PCR. Please try again.')
-  } finally {
-    setSubmitting(false)
+      setSuccess(true)
+      setShowSuccessModal(true)
+    } catch (err) {
+      console.error('Failed to save PCR:', err.message)
+      alert(err.response?.data?.message || 'Failed to save PCR. Please try again.')
+    } finally {
+      setSubmitting(false)
+    }
   }
-}
 
   const handleStep1Submit = (e) => {
     e.preventDefault()
@@ -387,7 +403,7 @@ export default function CreatePCR() {
                   <button key={obj}
                     className={`objective-tab ${isActive ? 'objective-tab--active' : ''}`}
                     style={isActive ? { background: oc.bg, borderColor: oc.border, color: oc.color } : {}}
-                    onClick={() => { setSelectedObj(obj); setPillarPage(1); setSelectMode(false) }}
+                    onClick={() => { setSelectedObj(obj); setPillarPage(1); setSelectMode(false), setPillarSearch('') }}
                   >
                     <span className="objective-tab__label">{obj}</span>
                     {count > 0 && (
@@ -402,7 +418,10 @@ export default function CreatePCR() {
 
             {selectedObj && (() => {
   const ITEMS_PER_PAGE = 10
-  const pillars = pillarsData[selectedObj] || []
+  const pillars = (pillarsData[selectedObj] || []).filter((p) =>
+  p.name.toLowerCase().includes(pillarSearch.toLowerCase()) ||
+  p.indicator.toLowerCase().includes(pillarSearch.toLowerCase())
+  )
   const totalPages = Math.ceil(pillars.length / ITEMS_PER_PAGE)
   const paginated = pillars.slice((pillarPage - 1) * ITEMS_PER_PAGE, pillarPage * ITEMS_PER_PAGE)
   const oc = OBJ_COLORS[selectedObj]
@@ -439,40 +458,48 @@ export default function CreatePCR() {
   ).length
 
   return (
-    <div className="pillar-section">
-      <div className="pillar-section__header">
+   <div className="pillar-section">
+    <div className="pillar-section__header">
+      <div className="pillar-section__header-left">
         <span className="pillar-section__title" style={{ color: oc.color }}>
           Available — {selectedObj}
         </span>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          {selectMode && (
-            <span style={{ fontSize: 13, color: '#555', fontWeight: 'bold' }}>
-              {selectedCount} item{selectedCount !== 1 ? 's' : ''} selected
-            </span>
-          )}
-          {selectMode && selectedCount > 0 && (
-            <button
-              className="btn-sm"
-              style={{ background: oc.bg, color: oc.color, borderColor: oc.border, fontSize: 12 }}
-              onClick={handleMassAdd}
-            >
-              Done
-            </button>
-          )}
-          {pillars.length > 0 && (
-              <button
-                className={`btn-sm ${selectMode ? 'btn-danger' : ''}`}
-                style={{ fontSize: 12 }}
-                onClick={() => setSelectMode((v) => !v)}
-              >
-                {selectMode ? 'Cancel' : 'Select'}
-              </button>
-            )}
-          {!selectMode && pillars.length > 0 && (
-            <span className="field-hint" style={{ margin: 0 }}>Click "+ Add" to include a pillar</span>
-          )}
-        </div>
+        <input
+          type="text"
+          className="search-box"
+          placeholder={`Search ${selectedObj} pillars...`}
+          value={pillarSearch}
+          onChange={(e) => { setPillarSearch(e.target.value); setPillarPage(1) }}
+        />
       </div>
+      <div className="pillar-section__header-right">
+        {selectMode && (
+          <span className="pillar-selected-count">
+            {selectedCount} item{selectedCount !== 1 ? 's' : ''} selected
+          </span>
+        )}
+        {selectMode && selectedCount > 0 && (
+          <button
+            className="btn-sm"
+            style={{ background: oc.bg, color: oc.color, borderColor: oc.border }}
+            onClick={handleMassAdd}
+          >
+            Done
+          </button>
+        )}
+        {pillars.length > 0 && (
+          <button
+            className={`btn-sm ${selectMode ? 'btn-danger' : ''}`}
+            onClick={() => setSelectMode((v) => !v)}
+          >
+            {selectMode ? 'Cancel' : 'Select'}
+          </button>
+        )}
+        {!selectMode && pillars.length > 0 && (
+          <span className="field-hint" style={{ margin: 0 }}>Click "+ Add" to include a pillar</span>
+        )}
+      </div>
+    </div>
 
       {pillarsLoading ? (
         <div style={{ padding: '20px', color: '#888', textAlign: 'center' }}>Loading pillars...</div>
@@ -616,11 +643,11 @@ export default function CreatePCR() {
               </button>
               <button
                 type="button"
-                className="btn-generate"
-                disabled={submitting || !allObjectivesFilled}
-                onClick={handleGenerate}
+                className="btn-save"
+                disabled={!allObjectivesFilled}
+                onClick={() => setStep(3)}
               >
-                {submitting ? 'Generating...' : '📄 Generate PCR'}
+                Next <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: 6 }} />
               </button>
             </div>
           </div>
@@ -654,16 +681,19 @@ export default function CreatePCR() {
                     You can now download it as PDF or Excel.
                   </div>
                 </div>
-                <button
-                  className="btn-save"
-                  style={{ width: '100%' }}
-                  onClick={() => {
-                    setShowSuccessModal(false)
-                    setStep(3)
-                  }}
-                >
-                  View
-                </button>
+               <button
+                className="btn-save"
+                style={{ width: '100%' }}
+                onClick={() => {  
+                  setShowSuccessModal(false)
+                  if (createdPCR && onViewPCR) {
+                    onViewPCR(createdPCR)
+                  }
+                  reset()
+                }}
+              >
+                View
+              </button>
               </div>
             </div>
           </div>
@@ -730,14 +760,19 @@ export default function CreatePCR() {
           </div>
 
           <div className="modal-footer">
-            <button type="button" className="btn-generate" onClick={handleDownloadPDF}>
-              <i className="fa-solid fa-file-pdf"></i> Download PDF
-            </button>
-            <button type="button" className="btn-generate" onClick={handleDownloadExcel}>
-              <i className="fa-solid fa-file-excel"></i> Download Excel
-            </button>
-            <button type="button" className="btn-save" onClick={reset}>Create Another</button>
-          </div>
+          <button type="button" className="btn-cancel" onClick={() => setStep(2)}>
+            <FontAwesomeIcon icon={faArrowLeft} style={{ marginRight: 6 }} />
+            Edit
+          </button>
+          <button
+            type="button"
+            className="btn-save"
+            disabled={submitting}
+            onClick={handleGenerate}
+          >
+            {submitting ? 'Generating...' : '📄 Generate PCR'}
+          </button>
+        </div>
         </>
       )}
     </>
