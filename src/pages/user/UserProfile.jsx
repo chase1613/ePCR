@@ -207,8 +207,8 @@ const updateProfileMutation = useMutation({
           <div className="profile-hero__email">{profile.email}</div>
           <div className="profile-hero__meta">
             <span className="sb-user-role">Employee</span>
-            {profile.department && <span className="profile-hero__dept">· {profile.department}</span>}
-            {profile.position   && <span className="profile-hero__dept">· {profile.position}</span>}
+            {profile.department && <span className="profile-hero__dept">● {profile.department}</span>}
+            {profile.position   && <span className="profile-hero__dept">● {profile.position}</span>}
           </div>
         </div>
         {!editMode && !pwMode && (
