@@ -66,10 +66,6 @@ export default function CreatePCR({ onViewPCR }) {
   const [createdPCR, setCreatedPCR] = useState(null)
   const [pillarSearch, setPillarSearch] = useState('')
 
-      useEffect(() => {
-          document.title = 'Create | ePCR'
-          return () => { document.title = 'ePCR' }
-        }, [])
 
       const { data: pillarsData = EMPTY_PILLARS, isLoading: pillarsLoading } = useQuery({
       queryKey: ['pillars', form.department],

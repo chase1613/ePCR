@@ -36,9 +36,14 @@ export default function UserDashboard() {
   const currentYear = new Date().getFullYear()
 
   useEffect(() => {
-      document.title = 'Dashboard | ePCR'
-      return () => { document.title = 'ePCR' }
-    }, [])
+    const titles = {
+      dashboard: 'Dashboard | ePCR',
+      pcr:       'My PCR | ePCR',
+      create:    'Create | ePCR',
+      profile:   'Profile | ePCR',
+    }
+    document.title = titles[tab] || 'ePCR'
+  }, [tab])
 
     // Add this useEffect
     useEffect(() => {

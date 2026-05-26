@@ -65,10 +65,6 @@ export default function UserProfile() {
   const [showConfirm, setShowConfirm] = useState(false)
   const [showCurrent, setShowCurrent] = useState(false)
 
-  useEffect(() => {
-      document.title = 'User Profile | ePCR'
-      return () => { document.title = 'ePCR' }
-    }, [])
 
   // ── Message helper ──
   const showMsg = (text, type = 'success') => {

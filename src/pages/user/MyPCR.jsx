@@ -68,11 +68,6 @@ export default function MyPCR({ pcrList, loading, initialSelectedPCR, onClearSel
   const [currentPage,  setCurrentPage]  = useState(1)
 
 
-  useEffect(() => {
-      document.title = 'My PCR | ePCR'
-      return () => { document.title = 'ePCR' }
-    }, [])
-
 
   const { data: fetchedPCRs = [], isLoading } = useQuery({
     queryKey:             ['pcrs'],
