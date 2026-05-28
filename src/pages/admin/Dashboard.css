@@ -156,10 +156,13 @@
 /* ── Badges ── */
 .u-badge {
   font-size: 11px;
-  padding: 3px 10px;
+  padding: 3px 0;
   border-radius: 999px;
   white-space: nowrap;
   font-weight: 500;
+  width: 65px;
+  text-align: center;
+  display: inline-block;
 }
 
 .badge-employee,
@@ -168,9 +171,6 @@
   color: #085041;
 }
 
-.u-badge.badge-employee {
-  margin-right: 30px;
-}
 
 .badge-pending {
   background: #FAEEDA;
@@ -276,13 +276,14 @@
   align-items: flex-end;
   gap: 4px;
   flex-shrink: 0;
-  padding-right: 20px;
+  width: 90px;
 }
 
 .u-date {
   font-size: 11px;
   color: #aaa;
-  padding-right: 20px;
+  text-align: right;
+  white-space: nowrap;
 }
 
 .card-title-sub {
