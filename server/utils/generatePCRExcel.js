@@ -188,7 +188,12 @@ async function generateIPCRExcel(data, outputStream) {
     }
     rowHeight(rowNum, 28); rowNum++;
 
+    const dataRowNumbers = [];
+
+   
+
     if (rows.length === 0) {
+       dataRowNumbers.push(rowNum);
       mergeAndSet(rowNum, 1, rowNum, 3, 'N/A', {
         size: 8, align: 'left', valign: 'middle', wrap: true, border: true,
       });
@@ -203,6 +208,7 @@ async function generateIPCRExcel(data, outputStream) {
     
       for (let i = 0; i < rows.length; i++) {
         const row = rows[i];
+        dataRowNumbers.push(rowNum);
         setCell(rowNum, 1, row.mfo || '', { size: 8, align: 'left',   valign: 'middle', wrap: true,  border: true });
         setCell(rowNum, 2, row.si  || '', { size: 8, align: 'left',   valign: 'middle', wrap: true,  border: true });
         setCell(rowNum, 3, row.acc || '', { size: 8, align: 'left',   valign: 'middle', wrap: true,  border: true });
@@ -251,23 +257,22 @@ async function generateIPCRExcel(data, outputStream) {
     rowHeight(rowNum, 18);
     const subtotalRow = rowNum;
     rowNum++;
-    return subtotalRow;
+    return { subtotalRow, dataRowNumbers };
   }
 
   // ─── Draw the 3 sections ──────────────────────────────────
-  const coreSubtotalRow = drawSection(
-    hasStrat
-      ? 'CORE FUNCTION (60%)'
-      : 'CORE FUNCTION (60%) : IF NO STRATEGIC FUNCTION (80%)',
+  // AFTER
+  const { subtotalRow: coreSubtotalRow,  dataRowNumbers: coreDataRows  } = drawSection(
+    hasStrat ? 'CORE FUNCTION (60%)' : 'CORE FUNCTION (60%) : IF NO STRATEGIC FUNCTION (80%)',
     CORE_BG, coreRows, 'Core Function'
   );
-  const stratSubtotalRow = drawSection(
-    hasStrat
-      ? 'STRATEGIC OBJECTIVE(20%)'
-      : 'STRATEGIC OBJECTIVE(20%) : IF WITHOUT STRATEGIC OBJECTIVE/S (0%)',
+  const { subtotalRow: stratSubtotalRow, dataRowNumbers: stratDataRows } = drawSection(
+    hasStrat ? 'STRATEGIC OBJECTIVE(20%)' : 'STRATEGIC OBJECTIVE(20%) : IF WITHOUT STRATEGIC OBJECTIVE/S (0%)',
     STRAT_BG, stratRows, 'Strategic Function'
   );
-  const suppSubtotalRow = drawSection('SUPPORT FUNCTION (20%)', SUPP_BG, suppRows, 'Support Function');
+  const { subtotalRow: suppSubtotalRow,  dataRowNumbers: suppDataRows  } = drawSection(
+    'SUPPORT FUNCTION (20%)', SUPP_BG, suppRows, 'Support Function'
+  );
 
   // ─── SUMMARY ──────────────────────────────────────────────
   mergeAndSet(rowNum, 1, rowNum, 8, 'SUMMARY',
@@ -507,7 +512,34 @@ mergeAndSet(rowNum, 3, rowNum, 5, 'Position',  // ← span C-E to match above
 mergeAndSet(rowNum, 6, rowNum, 7, '', { border: true });
 mergeAndSet(rowNum, 8, rowNum, 8, dirTitle,
   { size: 8, align: 'center', valign: 'middle', border: true });
-rowHeight(rowNum, 16);
+rowHeight(rowNum, 16); rowNum++;
+
+
+  // AFTER — paste the entire block above the write call
+    const allEditableRows = [...coreDataRows, ...stratDataRows, ...suppDataRows];
+    const EDITABLE_COLS   = [3, 4, 5, 6, 7, 8]; // C=Acc, D=Q, E=E, F=T, G=A, H=Remarks
+
+    for (const rowIndex of allEditableRows) {
+      for (const col of EDITABLE_COLS) {
+        worksheet.getRow(rowIndex).getCell(col).protection = { locked: false };
+      }
+    }
+
+    await worksheet.protect('ipcr2026', {
+      selectLockedCells:   false, // 🔒 A, B and all headers are completely un-clickable
+      selectUnlockedCells: true,  // ✅ C–H data cells are clickable and editable
+      formatColumns:       true,  // ✅ Column resizing still works
+      formatRows:          true,  // ✅ Row resizing still works
+      formatCells:         false,
+      insertColumns:       false,
+      insertRows:          false,
+      insertHyperlinks:    false,
+      deleteColumns:       false,
+      deleteRows:          false,
+      sort:                false,
+      autoFilter:          false,
+      pivotTables:         false,
+    });
 
   // ─── Write ────────────────────────────────────────────────
   await workbook.xlsx.write(outputStream);
