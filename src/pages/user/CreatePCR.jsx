@@ -259,29 +259,29 @@ export default function CreatePCR({ onViewPCR }) {
       </div>
 
       {/* ── Step progress bar ── */}
-      <div className="pcr-main-steps">
-        {MAIN_STEPS.map((s, i) => {
-          const num      = i + 1
-          const isDone   = step > num
-          const isActive = step === num
-          const isLast   = i === MAIN_STEPS.length - 1
-          return (
-            <div key={s.label} className="pcr-main-steps__item">
-              <div className="pcr-main-steps__track">
-                <div className={`pcr-main-steps__dot ${isDone ? 'pcr-main-steps__dot--done' : ''} ${isActive ? 'pcr-main-steps__dot--active' : ''}`}>
-                  {isDone ? '✓' : num}
+          <div className="pcr-main-steps">
+          {MAIN_STEPS.map((s, i) => {
+            const num      = i + 1
+            const isDone   = step > num
+            const isActive = step === num
+            const isLast   = i === MAIN_STEPS.length - 1
+            return (
+              <div key={s.label} className={`pcr-main-steps__item ${isLast ? '' : 'pcr-main-steps__item--grow'}`}>
+                <div className="pcr-main-steps__dot-wrap">
+                  <div className={`pcr-main-steps__dot ${isDone ? 'pcr-main-steps__dot--done' : ''} ${isActive ? 'pcr-main-steps__dot--active' : ''}`}>
+                    {isDone ? '✓' : num}
+                  </div>
+                  <div className={`pcr-main-steps__label ${isDone ? 'pcr-main-steps__label--done' : ''} ${isActive ? 'pcr-main-steps__label--active' : ''}`}>
+                    {s.label}
+                  </div>
                 </div>
                 {!isLast && (
                   <div className={`pcr-main-steps__line ${isDone ? 'pcr-main-steps__line--done' : ''}`} />
                 )}
               </div>
-              <div className={`pcr-main-steps__label ${isDone ? 'pcr-main-steps__label--done' : ''} ${isActive ? 'pcr-main-steps__label--active' : ''}`}>
-                {s.label}
-              </div>
-            </div>
-          )
-        })}
-      </div>
+            )
+          })}
+        </div>
 
       {/* ══ STEP 1: Employee Details ══ */}
       {step === 1 && (
