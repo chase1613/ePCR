@@ -221,6 +221,26 @@
 .btn-edit-profile svg   { width: 13px; height: 13px; }
 .btn-edit-profile:hover { background: #C2D9F0; }
 
+.btn-change-password {
+  display:       inline-flex;
+  align-items:   center;
+  gap:           7px;
+  padding:       8px 18px;
+  font-size:     13px;
+  font-weight:   500;
+  color:         #185FA5;
+  background:    #fff;
+  border:        1.5px solid #185FA5;
+  border-radius: 8px;
+  cursor:        pointer;
+  white-space:   nowrap;
+  transition:    background 0.15s, color 0.15s;
+  flex-shrink:   0;
+}
+.btn-change-password:hover {
+  background: #E6F1FB;
+}
+
 /* ── Form ── */
 .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .form-row    { margin-bottom: 12px; }

@@ -278,35 +278,38 @@ const updateProfileMutation = useMutation({
         </div>
 
         {/* VIEW MODE */}
-        {!pwMode && (
-        <div className="profile-fields">
-          <div className="profile-field" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row' }}>
-            <div>
-              <div className="profile-field__label">Current password</div>
-              <div className="profile-field__value">••••••••</div>
+            {!pwMode && (
+        <div style={{
+          display:     'flex',
+          alignItems:  'flex-end',
+          gap:         '24px',
+          padding:     '4px 0',
+        }}>
+          <div style={{ minWidth: '140px' }}>
+            <div style={{
+              fontSize:      '11px',
+              fontWeight:    '500',
+              color:         '#aaa',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+              marginBottom:  '6px',
+            }}>
+              Current Password
             </div>
-            {!editMode && (
-              <button
-                className="card-action"
-                onClick={() => setPwMode(true)}
-                style={{
-                  display:      'inline-flex',
-                  alignItems:   'center',
-                  gap:          '6px',
-                  padding:      '8px 20px',
-                  border:       '1px solid currentColor',
-                  borderRadius: '8px',
-                  fontSize:     '13px',
-                  fontWeight:   '500',
-                  cursor:       'pointer',
-                  background:   'transparent',
-                }}
-              >
-                <ion-icon name="lock-closed-outline" style={{ fontSize: '15px' }} />
-                Change password
-              </button>
-            )}
+            <div style={{ fontSize: '18px', color: '#111', letterSpacing: '2px', lineHeight: 1 }}>
+              ••••••••
+            </div>
           </div>
+
+          {!editMode && (
+           <button className="btn-change-password" onClick={() => setPwMode(true)} style={{ position: 'relative', top: '8px' }}>
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" width="14" height="14">
+                <rect x="3" y="7" width="10" height="7" rx="1.5"/>
+                <path d="M5 7V5a3 3 0 0 1 6 0v2"/>
+              </svg>
+              Change password
+            </button>
+          )}
         </div>
       )}
 
