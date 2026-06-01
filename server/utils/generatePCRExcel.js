@@ -123,11 +123,11 @@ async function generateIPCRExcel(data, outputStream) {
     // Signature space for employee
   rowHeight(rowNum, 50); rowNum++;
 
-  mergeAndSet(rowNum, 1, rowNum, 8, empName,
+  mergeAndSet(rowNum, 1, rowNum, 7, empName,
     { align: 'right', valign: 'middle', bold: true, size: 10 });
   rowHeight(rowNum, 14); rowNum++;
 
-  mergeAndSet(rowNum, 1, rowNum, 8, empPos,
+  mergeAndSet(rowNum, 1, rowNum, 7, empPos,
     { align: 'right', valign: 'middle', size: 9 });
   rowHeight(rowNum, 14); rowNum++;
 
@@ -142,13 +142,17 @@ async function generateIPCRExcel(data, outputStream) {
     { align: 'center', valign: 'middle', bold: true, size: 10, color: 'FFC00000' });
   mergeAndSet(rowNum, 5, rowNum, 8, dirName,
     { align: 'center', valign: 'middle', bold: true, size: 10 });
-  rowHeight(rowNum, 16); rowNum++;
+  rowHeight(rowNum, 16); 
+  const dirNameRowIdx = rowNum; 
+  rowNum++;
 
   mergeAndSet(rowNum, 1, rowNum, 4, 'Position',
     { align: 'center', valign: 'middle', size: 9 });
   mergeAndSet(rowNum, 5, rowNum, 8, dirTitle,
     { align: 'center', valign: 'middle', size: 9 });
-  rowHeight(rowNum, 14); rowNum++;
+  rowHeight(rowNum, 14);
+  const dirTitleRowIdx = rowNum;
+   rowNum++;
 
   rowHeight(rowNum, 8); rowNum++;
 
@@ -524,6 +528,9 @@ rowHeight(rowNum, 16); rowNum++;
         worksheet.getRow(rowIndex).getCell(col).protection = { locked: false };
       }
     }
+
+    worksheet.getRow(dirNameRowIdx).getCell(8).protection  = { locked: false };
+    worksheet.getRow(dirTitleRowIdx).getCell(8).protection = { locked: false };
 
     await worksheet.protect('ipcr2026', {
       selectLockedCells:   false, // 🔒 A, B and all headers are completely un-clickable
