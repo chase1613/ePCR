@@ -31,6 +31,14 @@ export default function ForgotPassword() {
   const [showNew,     setShowNew]     = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [done,        setDone]        = useState(false)
+  const [isBlocked, setIsBlocked] = useState(false)
+  const [resendCooldown, setResendCooldown] = useState(0)
+
+  useEffect(() => {
+  if (resendCooldown <= 0) return
+  const timer = setTimeout(() => setResendCooldown(c => c - 1), 1000)
+  return () => clearTimeout(timer)
+  }, [resendCooldown])
 
   useEffect(() => {
         document.title = 'Forgot Password | ePCR'
@@ -50,14 +58,18 @@ export default function ForgotPassword() {
 
   // ── Step 2: Verify OTP ──
   const verifyOtpMutation = useMutation({
-    mutationFn: verifyOtp,
-    onSuccess: () => {
-      setStep(3)
-    },
-    onError: (err) => {
-      setOtpError(err.response?.data?.message || 'Invalid or expired OTP. Please try again.')
-    },
-  })
+      mutationFn: verifyOtp,
+      onSuccess: () => {
+        setStep(3)
+      },
+      onError: (err) => {
+        const message = err.response?.data?.message || 'Invalid or expired OTP. Please try again.'
+        setOtpError(message)
+        if (err.response?.status === 429) {
+          setIsBlocked(true)
+        }
+      },
+    })
 
   // ── Step 2: Resend OTP ──
   const resendOtpMutation = useMutation({
@@ -65,9 +77,11 @@ export default function ForgotPassword() {
     onMutate: () => {
       setOtp(['', '', '', '', '', ''])
       setOtpError('')
+      setIsBlocked(false)
     },
     onSuccess: () => {
       document.getElementById('otp-0')?.focus()
+      setResendCooldown(60)
     },
     onError: (err) => {
       setOtpError(err.response?.data?.message || 'Failed to resend OTP.')
@@ -276,7 +290,11 @@ export default function ForgotPassword() {
                   </span>
                 )}
 
-                <button type="submit" className="fp-submit-btn" disabled={verifyOtpMutation.isPending}>
+                <button 
+                  type="submit" 
+                  className="fp-submit-btn" 
+                  disabled={verifyOtpMutation.isPending || isBlocked}
+                >
                   {verifyOtpMutation.isPending
                     ? <span className="btn-spinner"><FadeLoader color="#ffffff" height={8} width={2} radius={2} margin={-6} /></span>
                     : 'Verify OTP'
@@ -289,10 +307,15 @@ export default function ForgotPassword() {
                     type="button"
                     className="fp-link-btn fp-link-btn--inline"
                     onClick={() => resendOtpMutation.mutate({ email })}
-                    disabled={resendOtpMutation.isPending}
+                    disabled={resendOtpMutation.isPending || resendCooldown > 0}
                   >
                     <i className="fa-solid fa-rotate-right" />
-                    {resendOtpMutation.isPending ? ' Resending...' : ' Resend OTP'}
+                    {resendCooldown > 0
+                      ? ` Resend OTP in ${resendCooldown}s`
+                      : resendOtpMutation.isPending
+                        ? ' Resending...'
+                        : ' Resend OTP'
+                    }
                   </button>
                 </div>
 

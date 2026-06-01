@@ -83,8 +83,8 @@ exports.verifyOTP = async (req, res) => {
       return res.status(400).json({ message: 'OTP has expired. Please request a new one.' })
     }
 
-    // Track failed attempts — block after 5 wrong tries
-    if (stored.attempts >= 5) {
+    // Track failed attempts — block after 3 wrong tries
+    if (stored.attempts >= 3) {
       otpStore.delete(email.toLowerCase())
       return res.status(429).json({
         message: 'Too many incorrect attempts. Please request a new OTP.',
@@ -95,7 +95,7 @@ exports.verifyOTP = async (req, res) => {
       // Increment attempts
       stored.attempts += 1
       otpStore.set(email.toLowerCase(), stored)
-      const attemptsLeft = 5 - stored.attempts
+      const attemptsLeft = 3 - stored.attempts
       return res.status(400).json({
         message: `Invalid OTP. ${attemptsLeft} attempt(s) remaining.`,
       })
