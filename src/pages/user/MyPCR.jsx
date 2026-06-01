@@ -503,23 +503,15 @@ export default function MyPCR({ pcrList, loading, initialSelectedPCR, onClearSel
         {totalPages > 1 && (
           <div className="pagination-controls">
             <button className="page-btn" onClick={() => setCurrentPage(p => p - 1)} disabled={currentPage === 1}>‹</button>
-            {Array.from({ length: totalPages }, (_, i) => i + 1)
-              .filter(p => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1)
-              .reduce((acc, p, idx, arr) => {
-                if (idx > 0 && p - arr[idx - 1] > 1) acc.push('...')
-                acc.push(p)
-                return acc
-              }, [])
-              .map((p, idx) =>
-                p === '...'
-                  ? <span key={`e-${idx}`} className="page-ellipsis">…</span>
-                  : <button
-                      key={p}
-                      className={`page-btn ${currentPage === p ? 'page-btn--active' : ''}`}
-                      onClick={() => setCurrentPage(p)}
-                    >{p}</button>
-              )
-            }
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+              <button
+                key={p}
+                className={`page-btn ${currentPage === p ? 'page-btn--active' : ''}`}
+                onClick={() => setCurrentPage(p)}
+              >
+                {p}
+              </button>
+            ))}
             <button className="page-btn" onClick={() => setCurrentPage(p => p + 1)} disabled={currentPage === totalPages}>›</button>
           </div>
         )}
