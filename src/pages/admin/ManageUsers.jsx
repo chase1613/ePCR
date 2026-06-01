@@ -85,7 +85,7 @@ export default function ManageUsers() {
     setForm({
       full_name:   u.name,
       employee_id: u.employee_id,
-      email:       u.email,
+      email: u.email?.toLowerCase().trim(),
       department:  u.department || '',
       position:    u.position   || '',
       role:        u.role,
@@ -457,7 +457,7 @@ export default function ManageUsers() {
                   type="email"
                   placeholder="e.g. juan@csc.gov.ph"
                   value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  onChange={(e) => setForm({ ...form, email: e.target.value.toLowerCase().trim() })}
                 />
                 {formErrors.email && <span className="field-error">{formErrors.email}</span>}
               </div>

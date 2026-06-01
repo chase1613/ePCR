@@ -20,7 +20,8 @@ exports.getUsers = async (req, res) => {
 
 // ── Create new user ──
 exports.createUser = async (req, res) => {
-  const { employee_id, name, email, department, position, role, password } = req.body
+  const { employee_id, name, department, position, role, password } = req.body
+  const email = req.body.email?.toLowerCase().trim()
 
   try {
     if (!employee_id || !name || !email || !password) {
@@ -75,6 +76,18 @@ exports.updateUser = async (req, res) => {
 
     if (!existing) {
       return res.status(404).json({ message: 'User not found.' })
+    }
+
+    // Check if another user already owns this email
+    const { data: emailTaken } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', email)
+      .neq('id', id)
+      .maybeSingle()
+
+    if (emailTaken) {
+      return res.status(409).json({ message: 'Email is already in use.' })
     }
 
     const { error } = await supabase
