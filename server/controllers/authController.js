@@ -137,14 +137,30 @@ exports.updateProfile = async (req, res) => {
   }
 }
 
+
 exports.heartbeat = async (req, res) => {
   try {
-    const { error } = await supabase
+    const { data: user } = await supabase
       .from('users')
-      .update({ last_seen: new Date().toISOString() })
+      .select('last_seen')
       .eq('id', req.user.id)
+      .single()
 
-    if (error) throw error
+    const lastSeen = new Date(user?.last_seen)
+    const now = new Date()
+    const diffMinutes = (now - lastSeen) / 1000 / 60
+
+    // ✅ Only write to DB if last_seen is older than 4 minutes
+    // Prevents duplicate writes if two pings arrive close together
+    if (diffMinutes >= 4) {
+      const { error } = await supabase
+        .from('users')
+        .update({ last_seen: now.toISOString() })
+        .eq('id', req.user.id)
+
+      if (error) throw error
+    }
+
     res.json({ ok: true })
   } catch (err) {
     console.error('heartbeat error:', err.message)
