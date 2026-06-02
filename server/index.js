@@ -21,8 +21,10 @@ app.use(cors({
 }))
 
 app.use(express.json())
-app.use('/api/pcr', pcrRoutes);
 app.use(express.urlencoded({ extended: true }))
+
+
+app.use('/api/pcr', pcrRoutes);
 app.use('/api/pillars', pillarRoutes)
 app.use('/api/forgot-password', forgotPasswordRoutes)
 
