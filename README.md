@@ -30,3 +30,7 @@ Account deactivation with modal feedback on login attempt
 OTP email verification for password resets
 Protected routes with middleware for both user and admin roles
 Sentry integration for real-time error monitoring and session replay
+
+
+License
+This project was developed for the Civil Service Commission Region VI as part of the 2026 ePCR initiative.
