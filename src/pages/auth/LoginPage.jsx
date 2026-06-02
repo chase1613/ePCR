@@ -79,22 +79,16 @@ export default function LoginPage() {
 
         {/* Blue Header */}
         <div className="login-card-header">
-              <img
-              src="/fav.png"
-              alt="CSC Logo"
-              style={{
-                width: '60px',
-                height: '60px',
-                objectFit: 'contain',
-              }}
-           />
-          <div>
-            <p className="login-card-header-title">
-              2026 (EPCR) Electronic Performance Commitment Review
-            </p>
-            <p className="login-card-header-sub">Civil Service Commission Region VI</p>
-          </div>
-        </div>
+              <div className="login-card-logo-wrap">
+                <img src="/fav.png" alt="CSC Logo" className="login-card-logo" />
+              </div>
+              <div className="login-card-header-text">
+                <p className="login-card-header-title">
+                  2026 (EPCR) Electronic Performance Commitment Review
+                </p>
+                <p className="login-card-header-sub">Civil Service Commission Region VI</p>
+              </div>
+            </div>
 
         {/* Body */}
         <div className="login-card-body">
