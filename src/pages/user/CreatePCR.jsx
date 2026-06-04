@@ -449,9 +449,7 @@ export default function CreatePCR({ onViewPCR }) {
     }
   }
 
-  const selectedCount = paginated.filter((p) =>
-    pillarCommitments[selectedObj].some((c) => c.id === p.id)
-  ).length
+  const selectedCount = pillarCommitments[selectedObj].length
 
   return (
    <div className="pillar-section">
