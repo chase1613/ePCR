@@ -154,10 +154,10 @@ function generateIPCRPdf(data, outputStream) {
   curY = doc.y + 10;
 
   doc.font('Helvetica-Bold').fontSize(8)
-     .text(empName, LEFT, curY, { width: PW, align: 'right' });
+     .text(empName, LEFT, curY, { width: PW * 0.88, align: 'right' });
   curY += 11;
   doc.font('Helvetica').fontSize(7.5)
-     .text(empPos, LEFT, curY, { width: PW, align: 'right' });
+     .text(empPos, LEFT, curY, { width: PW * 0.88, align: 'right' });
   curY += 14;
 
   doc.font('Helvetica').fontSize(7.5).text('Reviewed by:', LEFT, curY);
