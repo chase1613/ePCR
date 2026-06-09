@@ -4,9 +4,9 @@ import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons'
 import './CreatePCR.css'
-import { DIVISIONS, POSITIONS, NAMES} from '../../utils/constants'
+import { DIVISIONS, POSITIONS } from '../../utils/constants'
 
-const API = import.meta.env.VITE_API_URL
+const API = import.meta.env.VITE_API_URL 
 
 const OBJ_COLORS = {
   'Core Function':      { bg: '#E6F1FB', color: '#0C447C', border: '#C2D9F0' },
@@ -65,6 +65,32 @@ export default function CreatePCR({ onViewPCR }) {
   const [createdPCRId, setCreatedPCRId] = useState(null)
   const [createdPCR, setCreatedPCR] = useState(null)
   const [pillarSearch, setPillarSearch] = useState('')
+
+            // ── NEW: add this block right here ──
+      const { data: usersData = [], isLoading: usersLoading } = useQuery({
+        queryKey: ['users'],
+        queryFn: async () => {
+          const token = localStorage.getItem('token')
+          const { data } = await axios.get(`${API}/auth/users/names`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          const formatName = (fullName) => {
+          const parts = fullName.trim().split(' ')
+          if (parts.length < 2) return fullName.toUpperCase()
+
+          const lastName       = parts[parts.length - 1]
+          const firstAndMiddle = parts.slice(0, parts.length - 1)
+
+          return `${lastName.toUpperCase()}, ${firstAndMiddle.join(' ').toUpperCase()}`
+        }
+
+        return data
+          .map((u) => u.name ? formatName(u.name) : null)
+          .filter(Boolean)
+          .sort((a, b) => a.localeCompare(b))
+        },
+        staleTime: 1000 * 60 * 5,
+      })
 
 
       const { data: pillarsData = EMPTY_PILLARS, isLoading: pillarsLoading } = useQuery({
@@ -307,10 +333,18 @@ export default function CreatePCR({ onViewPCR }) {
 
             <div className="form-row">
               <label className="form-label">Name</label>
-              <select className={`form-select ${errors.name ? 'input-error' : ''}`} value={form.name}
-                onChange={(e) => { setForm({ ...form, name: e.target.value }); setErrors({ ...errors, name: '' }) }}>
-                <option value="">— Select name —</option>
-                {NAMES.map((n) => <option key={n} value={n}>{n}</option>)}
+              <select
+                className={`form-select ${errors.name ? 'input-error' : ''}`}
+                value={form.name}
+                disabled={usersLoading}
+                onChange={(e) => { setForm({ ...form, name: e.target.value }); setErrors({ ...errors, name: '' }) }}
+              >
+                <option value="">
+                  {usersLoading ? 'Loading names…' : '— Select name —'}
+                </option>
+                {usersData.map((name) => (
+                  <option key={name} value={name}>{name}</option>
+                ))}
               </select>
               {errors.name && <span className="field-error">{errors.name}</span>}
             </div>

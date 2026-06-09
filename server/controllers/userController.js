@@ -138,3 +138,22 @@ exports.toggleUser = async (req, res) => {
     res.status(500).json({ message: 'Server error.' })
   }
 }
+
+
+// ── Get active user names only (for dropdowns) ──
+exports.getUserNames = async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('users')
+      .select('id, name')
+      .eq('is_active', true)
+      .order('name', { ascending: true })
+
+    if (error) throw error
+    res.status(200).json(data)
+
+  } catch (err) {
+    console.error('getUserNames error:', err.message)
+    res.status(500).json({ message: 'Server error.' })
+  }
+}
