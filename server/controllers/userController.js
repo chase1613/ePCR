@@ -147,6 +147,7 @@ exports.getUserNames = async (req, res) => {
       .from('users')
       .select('id, name')
       .eq('is_active', true)
+      .eq('role', 'user')
       .order('name', { ascending: true })
 
     if (error) throw error
