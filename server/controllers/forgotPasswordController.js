@@ -32,35 +32,36 @@ exports.sendOTP = async (req, res) => {
       return res.status(403).json({ message: 'This account has been deactivated.' })
     }
 
-    // Check if there's an existing OTP that hasn't expired yet
-    const existing = otpStore.get(email.toLowerCase())
-    if (existing && Date.now() < existing.expires) {
-      const minutesLeft = Math.ceil((existing.expires - Date.now()) / 60000)
-      return res.status(429).json({
-        message: `An OTP was already sent. Please wait ${minutesLeft} minute(s) before requesting a new one.`,
+    // Check if there's an existing OTP — only block if resend cooldown is active (60s)
+      const existing = otpStore.get(email.toLowerCase())
+      if (existing && Date.now() < existing.resendAllowedAt) {
+        const secondsLeft = Math.ceil((existing.resendAllowedAt - Date.now()) / 1000)
+        return res.status(429).json({
+          message: `Please wait ${secondsLeft} second(s) before requesting a new OTP.`,
+        })
+      }
+
+      // Generate OTP — expires in 15 minutes, resend allowed after 60s
+      const otp             = generateOTP()
+      const expires         = Date.now() + 15 * 60 * 1000
+      const resendAllowedAt = Date.now() + 60 * 1000
+      otpStore.set(email.toLowerCase(), { otp, expires, resendAllowedAt, attempts: 0 })
+
+      // Send email — always use the stored lowercase email
+      await resend.emails.send({
+        from:    'ePCR CSC <onboarding@resend.dev>',
+        to:      user.email,
+        subject: 'Your ePCR Password Reset OTP',
+        html:    emailTemplate(user.name, otp),
       })
+
+      res.status(200).json({ message: 'OTP sent to your email. It expires in 15 minutes.' })
+
+    } catch (err) {
+      console.error('sendOTP error:', err.message)
+      res.status(500).json({ message: 'Failed to send OTP. Please try again.' })
     }
-
-    // Generate OTP — expires in 15 minutes
-    const otp     = generateOTP()
-    const expires = Date.now() + 15 * 60 * 1000
-    otpStore.set(email.toLowerCase(), { otp, expires, attempts: 0 })
-
-    // Send email
-    await resend.emails.send({
-      from:    'ePCR CSC <onboarding@resend.dev>',
-      to:      email,
-      subject: 'Your ePCR Password Reset OTP',
-      html:    emailTemplate(user.name, otp),
-    })
-
-    res.status(200).json({ message: 'OTP sent to your email. It expires in 15 minutes.' })
-
-  } catch (err) {
-    console.error('sendOTP error:', err.message)
-    res.status(500).json({ message: 'Failed to send OTP. Please try again.' })
   }
-}
 
 // ── Step 2: Verify OTP ──
 exports.verifyOTP = async (req, res) => {
