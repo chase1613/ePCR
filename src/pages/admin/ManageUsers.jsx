@@ -30,6 +30,12 @@ export default function ManageUsers() {
   const [toggleTarget,  setToggleTarget]  = useState(null)
   const [toggling,      setToggling]      = useState(false)
   const [toast, setToast] = useState(null)
+  const [showPasswordModal,  setShowPasswordModal]  = useState(false)
+  const [newPassword,        setNewPassword]        = useState('')
+  const [showNewPassword,    setShowNewPassword]    = useState(false)
+  const [passwordErr,        setPasswordErr]        = useState('')
+  const [passwordMsg,        setPasswordMsg]        = useState('')
+  const [passwordSubmitting, setPasswordSubmitting] = useState(false)
 
   useEffect(() => {
     document.title = 'Manage Users | ePCR'
@@ -197,6 +203,32 @@ export default function ManageUsers() {
   }
 }
 
+      // ── Change own password ──
+    const handleChangePassword = async () => {
+      if (!newPassword.trim()) return setPasswordErr('Password is required.')
+      if (newPassword.length < 8) return setPasswordErr('Password must be at least 8 characters.')
+
+      try {
+        setPasswordSubmitting(true)
+        setPasswordErr('')
+        await axios.patch(
+          `${API}/auth/change-password`,
+          { newPassword },
+          authHeaders
+        )
+        setPasswordMsg('Password changed successfully.')
+        setTimeout(() => {
+          setShowPasswordModal(false)
+          setNewPassword('')
+          setPasswordMsg('')
+        }, 1500)
+      } catch (err) {
+        setPasswordErr(err.response?.data?.message || 'Failed to change password.')
+      } finally {
+        setPasswordSubmitting(false)
+      }
+    }
+
   // ── Filter + uFuzzy search ──
   const roleStatFiltered = users.filter((u) => {
     const matchRole = roleFilter === 'all' || u.role === roleFilter
@@ -248,7 +280,17 @@ export default function ManageUsers() {
         )}
 
         <div className="page-header">
-          <h1 className="page-title">Manage users</h1>
+        <h1 className="page-title">Manage users</h1>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button className="btn-primary" onClick={() => {
+            setNewPassword('')
+            setPasswordErr('')
+            setPasswordMsg('')
+            setShowNewPassword(false)
+            setShowPasswordModal(true)
+          }}>
+            🔑 Change Password
+          </button>
           <button className="btn-primary" onClick={openCreate}>
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path d="M8 3v10M3 8h10"/>
@@ -256,6 +298,7 @@ export default function ManageUsers() {
             Add new user
           </button>
         </div>
+      </div>
 
         {/* Toolbar */}
         <div className="toolbar">
@@ -630,6 +673,75 @@ export default function ManageUsers() {
           </div>
         </div>
       )}
+
+          {/* ── Change Own Password Modal ── */}
+    {showPasswordModal && (
+      <div className="modal-overlay" onClick={() => setShowPasswordModal(false)}>
+        <div className="modal modal--sm" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-header">
+            <h2 className="modal-title">Change Password</h2>
+            <button className="modal-close" onClick={() => setShowPasswordModal(false)}>
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M3 3l10 10M13 3L3 13"/>
+              </svg>
+            </button>
+          </div>
+
+          <div style={{ marginBottom: 12, fontSize: 13, color: '#555' }}>
+            Changing password for <strong>{currentUser?.name}</strong>
+          </div>
+
+          <div className="form-row">
+            <label className="form-label">New Password</label>
+            <div style={{ position: 'relative' }}>
+              <input
+                className={`form-input ${passwordErr ? 'input-error' : ''}`}
+                type={showNewPassword ? 'text' : 'password'}
+                placeholder="Min. 8 characters"
+                value={newPassword}
+                onChange={(e) => { setNewPassword(e.target.value); setPasswordErr('') }}
+                style={{ paddingRight: 40 }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowNewPassword((v) => !v)}
+                style={{
+                  position: 'absolute', right: 10, top: '50%',
+                  transform: 'translateY(-50%)', background: 'none',
+                  border: 'none', cursor: 'pointer', color: '#888', padding: 0,
+                }}
+              >
+                {showNewPassword ? (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="18" height="18">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                    <line x1="1" y1="1" x2="23" y2="23"/>
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="18" height="18">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                )}
+              </button>
+            </div>
+            {passwordErr && <span className="field-error">{passwordErr}</span>}
+            {passwordMsg && <div className="server-success">{passwordMsg}</div>}
+          </div>
+
+          <div className="modal-footer">
+            <button className="btn-cancel" onClick={() => setShowPasswordModal(false)}>Cancel</button>
+            <button
+              className="btn-save"
+              onClick={handleChangePassword}
+              disabled={passwordSubmitting}
+            >
+              {passwordSubmitting ? 'Saving...' : 'Change Password'}
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
     </div>
   )
 }
