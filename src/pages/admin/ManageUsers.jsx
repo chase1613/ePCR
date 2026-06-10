@@ -289,7 +289,7 @@ export default function ManageUsers() {
             setShowNewPassword(false)
             setShowPasswordModal(true)
           }}>
-            🔑 Change Password
+            🔑 Change Password for Admin
           </button>
           <button className="btn-primary" onClick={openCreate}>
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
