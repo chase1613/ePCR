@@ -133,7 +133,7 @@ npm install
 
 ### Frontend:
 ```
-cd client
+cd epcr-app
 npm install
 ```
 
