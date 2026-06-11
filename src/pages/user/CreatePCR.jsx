@@ -104,7 +104,7 @@ export default function CreatePCR({ onViewPCR }) {
         const grouped = {
           'Core Function':      [],
           'Strategic Function': [],
-          'Support Function':   [],
+          'Support Function':   [], 
         }
         data.forEach((p) => {
           if (grouped[p.type]) {
